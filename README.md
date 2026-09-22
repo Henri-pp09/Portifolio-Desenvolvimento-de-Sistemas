@@ -20,7 +20,7 @@ Git/GitHub e desenvolvimento web.
 ## ✨ Coisas ja produzidas
 
 - 🐦 Site com cátalogo de passáros
-
+- Sites em desenvolvimento...
 
 ## 🛠️ Ferramentas
 
@@ -29,7 +29,6 @@ Git/GitHub e desenvolvimento web.
 - JavaScript
 - APIs
 - Font Awesome
-- Git
 - GitHub
 
 ## 📚 O que estou aprendendo
