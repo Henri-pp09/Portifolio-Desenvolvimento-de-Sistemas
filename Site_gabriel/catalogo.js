@@ -115,7 +115,7 @@ function criarCard(especie, fotoUrl) {
 }
 
 async function carregarCatalogo() {
-    mensagemCatalogo.textContent = "Carregando catalogo...";
+    definirMensagem(mensagemCatalogo, "Carregando catalogo...", "carregando");
     listaCatalogo.innerHTML = "";
 
     const especies = ESPECIES_CATALOGO.slice(0, QUANTIDADE_ESPECIES);
@@ -134,9 +134,11 @@ async function carregarCatalogo() {
         algumaAveCarregada = true;
     }
 
-    mensagemCatalogo.textContent = algumaAveCarregada
-        ? ""
-        : "Nao foi possivel carregar nenhuma ave agora. Tente novamente mais tarde.";
+    definirMensagem(
+        mensagemCatalogo,
+        algumaAveCarregada ? "" : "Nao foi possivel carregar nenhuma ave agora. Tente novamente mais tarde.",
+        "erro"
+    );
 }
 
 carregarCatalogo();

@@ -86,9 +86,9 @@ if (campoFotoPost) {
             imagemPostSelecionada = await redimensionarImagem(arquivo);
             previaImagemPost.src = imagemPostSelecionada;
             previaImagemPost.hidden = false;
-            mensagemPost.textContent = "";
+            definirMensagem(mensagemPost, "");
         } catch (erro) {
-            mensagemPost.textContent = erro.message;
+            definirMensagem(mensagemPost, erro.message, "erro");
             campoFotoPost.value = "";
         }
     });
@@ -99,7 +99,7 @@ if (formNovoPost) {
         evento.preventDefault();
 
         if (!usuarioAtual) {
-            mensagemPost.textContent = "Crie um perfil para poder publicar.";
+            definirMensagem(mensagemPost, "Crie um perfil para poder publicar.", "erro");
             return;
         }
 
@@ -113,7 +113,7 @@ if (formNovoPost) {
         if (campoFotoPost) campoFotoPost.value = "";
         imagemPostSelecionada = null;
         previaImagemPost.hidden = true;
-        mensagemPost.textContent = "";
+        definirMensagem(mensagemPost, "");
         renderizarFeed();
     });
 }

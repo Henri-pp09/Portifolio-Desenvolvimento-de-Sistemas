@@ -73,10 +73,10 @@ if (!usuarioAtual) {
                 validarArquivoDeImagem(arquivo);
                 const dataUrl = await redimensionarImagem(arquivo, 300);
                 atualizarUsuario(usuarioAtual.id, { avatarUrl: dataUrl });
-                mensagemImagens.textContent = "Foto de perfil atualizada!";
+                definirMensagem(mensagemImagens, "Foto de perfil atualizada!", "sucesso");
                 setTimeout(() => window.location.reload(), 500);
             } catch (erro) {
-                mensagemImagens.textContent = erro.message;
+                definirMensagem(mensagemImagens, erro.message, "erro");
             }
         });
     }
@@ -90,10 +90,10 @@ if (!usuarioAtual) {
                 validarArquivoDeImagem(arquivo);
                 const dataUrl = await redimensionarImagem(arquivo, 1200);
                 atualizarUsuario(usuarioAtual.id, { bannerUrl: dataUrl });
-                mensagemImagens.textContent = "Banner atualizado!";
+                definirMensagem(mensagemImagens, "Banner atualizado!", "sucesso");
                 setTimeout(() => window.location.reload(), 500);
             } catch (erro) {
-                mensagemImagens.textContent = erro.message;
+                definirMensagem(mensagemImagens, erro.message, "erro");
             }
         });
     }

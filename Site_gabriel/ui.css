@@ -6,7 +6,8 @@
  */
 
 :root {
-    /* Paleta de cores usada no site inteiro */
+    /* Paleta de cores inspirada na natureza: floresta, penas de tucano,
+       amanhecer e terra. Usada no site inteiro. */
     --cor-fundo: #eef5f0;
     --cor-texto: #18332f;
     --cor-marca-escura: #0d363a;
@@ -16,28 +17,138 @@
     --cor-verde-escuro: #0d6b63;
     --cor-amarelo: #ffcf5c;
     --cor-laranja: #ff7a45;
+    --cor-terra: #a15c3e;
+    --cor-ceu: #bfe3f0;
 
-    /* Medidas repetidas em varios componentes */
+    /* Cores de estado (feedback visual) */
+    --cor-sucesso: var(--cor-verde-escuro);
+    --cor-erro: #c1432e;
+    --cor-info: var(--cor-verde-agua);
+
+    /* Tipografia: titulo arredondado e amigavel (identidade propria) +
+       corpo de texto em fonte de sistema, para manter a leitura facil. */
+    --fonte-titulo: "Quicksand", "Segoe UI", Roboto, Arial, sans-serif;
+    --fonte-corpo: "Segoe UI", Roboto, Arial, sans-serif;
+
+    /* Escala de espacamentos usada nos componentes */
+    --espaco-1: 4px;
+    --espaco-2: 8px;
+    --espaco-3: 12px;
+    --espaco-4: 18px;
+    --espaco-5: 28px;
+    --espaco-6: 44px;
+
+    /* Bordas e sombras repetidas em varios componentes */
     --raio: 8px;
     --raio-botao: 12px;
+    --raio-grande: 20px;
     --sombra-cartao: 0 14px 32px rgba(24, 51, 47, 0.1);
+    --sombra-suave: 0 4px 14px rgba(24, 51, 47, 0.08);
 
     --cursor-teal: #7be0c4;
     --cursor-yellow: #ffcf5c;
     --cursor-dark: #0d363a;
+
+    --duracao-transicao: 0.2s;
+}
+
+/* Respeita quem prefere menos movimento na tela: as animacoes do site
+   inteiro (fade-in de cartoes, hover dos botoes, etc.) somem quase por
+   completo em vez de forcar o efeito. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 /* ---------- Base tipografica compartilhada ---------- */
 body {
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    font-family: var(--fonte-corpo);
     color: var(--cor-texto);
+}
+
+h1,
+h2,
+h3,
+.marca,
+.etiqueta {
+    font-family: var(--fonte-titulo);
+}
+
+h1,
+h2,
+h3 {
+    font-weight: 700;
 }
 
 .etiqueta {
     color: var(--cor-verde-agua);
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+/* ---------- Animacoes e transicoes compartilhadas ----------
+ * Um fade + leve deslize para cima quando os cartoes/paineis aparecem na
+ * tela. Aplicado direto pela tag/classe, entao funciona tanto no HTML
+ * estatico quanto nos cartoes criados via JavaScript (posts, catalogo).
+ */
+@keyframes surgir {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.painel,
+.post,
+.card-catalogo,
+.cartao-auth,
+.chamada,
+.sobre-conteudo,
+.composer,
+.capa-perfil,
+.hero-catalogo .topo,
+.intro {
+    animation: surgir 0.6s ease both;
+}
+
+/* Cartoes repetidos (posts do feed, cards do catalogo) entram em sequencia
+   em vez de todos de uma vez, para dar uma sensacao de "cascata" suave. */
+.post:nth-of-type(2),
+.card-catalogo:nth-of-type(2) {
+    animation-delay: 0.05s;
+}
+.post:nth-of-type(3),
+.card-catalogo:nth-of-type(3) {
+    animation-delay: 0.1s;
+}
+.post:nth-of-type(4),
+.card-catalogo:nth-of-type(4) {
+    animation-delay: 0.15s;
+}
+.post:nth-of-type(5),
+.card-catalogo:nth-of-type(5) {
+    animation-delay: 0.2s;
+}
+.post:nth-of-type(n + 6),
+.card-catalogo:nth-of-type(n + 6) {
+    animation-delay: 0.25s;
 }
 
 /* ---------- Cabecalho / menu compartilhado ---------- */
@@ -49,6 +160,14 @@ body {
     background: var(--cor-marca-escura);
     color: var(--cor-creme);
     box-shadow: 0 8px 24px rgba(13, 54, 58, 0.18);
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(
+            90deg,
+            var(--cor-verde-agua),
+            var(--cor-amarelo),
+            var(--cor-laranja)
+        )
+        1;
 }
 
 .barra-site nav {
@@ -61,6 +180,8 @@ body {
 }
 
 .marca {
+    display: inline-flex;
+    align-items: center;
     color: var(--cor-amarelo);
     font-weight: bold;
     text-decoration: none;
@@ -78,12 +199,19 @@ body {
     font-weight: bold;
     padding-bottom: 4px;
     border-bottom: 2px solid transparent;
-    transition: border-color 0.18s ease;
+    transition: border-color 0.18s ease, color 0.18s ease;
 }
 
 .links-nav a:hover,
 .links-nav a:focus-visible {
     border-color: var(--cor-verde-agua);
+}
+
+/* Destaca a pagina em que a pessoa esta agora, marcada no HTML com
+   aria-current="page" (tambem ajuda leitores de tela). */
+.links-nav a[aria-current="page"] {
+    color: var(--cor-amarelo);
+    border-color: var(--cor-amarelo);
 }
 
 @media (max-width: 640px) {
@@ -352,4 +480,146 @@ button:disabled,
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+/* ---------- Estados visuais de mensagem: sucesso, erro e carregando ----------
+ * Antes toda mensagem (login, cadastro, post, catalogo...) usava a mesma cor
+ * verde, sem diferenciar erro de sucesso. Agora cada estado tem cor e um
+ * simbolo proprio; quem escreve o JavaScript so precisa adicionar a classe
+ * (ver estado.js).
+ */
+.mensagem {
+    transition: color 0.2s ease;
+}
+
+.mensagem.sucesso {
+    color: var(--cor-sucesso);
+}
+
+.mensagem.sucesso::before {
+    content: "✓ ";
+}
+
+.mensagem.erro {
+    color: var(--cor-erro);
+    font-weight: bold;
+}
+
+.mensagem.erro::before {
+    content: "⚠ ";
+}
+
+.mensagem.carregando {
+    color: var(--cor-verde-escuro);
+}
+
+.mensagem.carregando::before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: girar 0.7s linear infinite;
+}
+
+/* ---------- Papel de parede personalizavel ----------
+ * Escolhido pela pessoa na pagina de perfil (ver aparencia.js) e guardado no
+ * navegador dela. So se aplica em paginas marcadas com a classe
+ * "fundo-personalizavel" no <body>, para nao interferir no visual das
+ * paginas de login/cadastro. Os padroes sao feitos so com gradientes CSS,
+ * entao funcionam sem depender de nenhuma imagem externa.
+ */
+body.fundo-personalizavel[data-papel="folhagem"] {
+    background-color: var(--cor-fundo);
+    background-image: radial-gradient(
+            circle at 18% 22%,
+            rgba(123, 224, 196, 0.4) 0,
+            transparent 42%
+        ),
+        radial-gradient(circle at 82% 4%, rgba(255, 207, 92, 0.3) 0, transparent 38%),
+        radial-gradient(circle at 60% 85%, rgba(13, 107, 99, 0.2) 0, transparent 42%);
+    background-attachment: fixed;
+}
+
+body.fundo-personalizavel[data-papel="amanhecer"] {
+    background-color: var(--cor-fundo);
+    background-image: linear-gradient(180deg, #ffe3b0 0%, #ffd3c2 22%, var(--cor-fundo) 62%);
+    background-attachment: fixed;
+}
+
+body.fundo-personalizavel[data-papel="ninho"] {
+    background-color: #f6ede0;
+    background-image: repeating-linear-gradient(
+        135deg,
+        rgba(161, 92, 62, 0.12) 0 10px,
+        transparent 10px 20px
+    );
+}
+
+/* Seletor de papel de parede (montado por aparencia.js dentro do perfil) */
+.grade-papeis {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 10px 0 4px;
+}
+
+.amostra-papel {
+    display: grid;
+    gap: 6px;
+    justify-items: center;
+    min-height: 0;
+    padding: 10px;
+    background: #ffffff;
+    color: var(--cor-texto);
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    box-shadow: none;
+}
+
+.amostra-papel:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-suave);
+}
+
+.amostra-papel.ativo {
+    outline: 3px solid var(--cor-verde-agua);
+    outline-offset: 2px;
+}
+
+.cor-amostra {
+    display: block;
+    width: 100%;
+    height: 34px;
+    border-radius: 6px;
+    border: 1px solid var(--cor-borda);
+}
+
+.amostra-padrao {
+    background: var(--cor-fundo);
+}
+
+.amostra-folhagem {
+    background: radial-gradient(circle at 30% 30%, var(--cor-verde-agua), var(--cor-fundo) 70%);
+}
+
+.amostra-amanhecer {
+    background: linear-gradient(180deg, #ffe3b0, #ffd3c2, var(--cor-fundo));
+}
+
+.amostra-ninho {
+    background: repeating-linear-gradient(135deg, #d8b596 0 8px, #f6ede0 8px 16px);
+}
+
+@media (max-width: 480px) {
+    .grade-papeis {
+        grid-template-columns: 1fr 1fr;
+    }
 }

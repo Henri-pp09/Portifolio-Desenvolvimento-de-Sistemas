@@ -24,17 +24,17 @@ if (formCadastro) {
         };
 
         botao.disabled = true;
-        mensagem.textContent = "Criando perfil...";
+        definirMensagem(mensagem, "Criando perfil...", "carregando");
 
         try {
             const usuarioCriado = await cadastrarUsuario(dados);
             iniciarSessao(usuarioCriado.id);
-            mensagem.textContent = "Perfil criado! Abrindo sua pagina...";
+            definirMensagem(mensagem, "Perfil criado! Abrindo sua pagina...", "sucesso");
             setTimeout(() => {
                 window.location.href = "perfil.html";
             }, 600);
         } catch (erro) {
-            mensagem.textContent = erro.message;
+            definirMensagem(mensagem, erro.message, "erro");
             botao.disabled = false;
         }
     });
@@ -48,17 +48,17 @@ if (formLogin) {
         const usuario = document.getElementById("loginUsuario").value.trim();
         const senha = document.getElementById("loginSenha").value;
 
-        mensagem.textContent = "Verificando...";
+        definirMensagem(mensagem, "Verificando...", "carregando");
         const usuarioEncontrado = await autenticarUsuario(usuario, senha);
 
         if (usuarioEncontrado) {
             iniciarSessao(usuarioEncontrado.id);
-            mensagem.textContent = "Login aceito! Indo para o perfil...";
+            definirMensagem(mensagem, "Login aceito! Indo para o perfil...", "sucesso");
             setTimeout(() => {
                 window.location.href = "perfil.html";
             }, 600);
         } else {
-            mensagem.textContent = "Usuario ou senha nao combinam.";
+            definirMensagem(mensagem, "Usuario ou senha nao combinam.", "erro");
         }
     });
 }

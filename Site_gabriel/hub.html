@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <title>Aviario Sonoro</title>
     <link rel="stylesheet" href="hub.css">
     <link rel="stylesheet" href="ui.css">
 </head>
-<body>
+<body class="fundo-personalizavel">
     <header class="barra-site">
         <nav>
-            <a class="marca" href="hub.html">Aviario Sonoro</a>
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviario Sonoro</a>
             <div class="links-nav">
-                <a href="catalogo.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Catalogo</a>
+                <a href="hub.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i>Feed</a>
+                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catalogo</a>
                 <a href="perfil.html"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Perfil</a>
-                <a href="login.html">Login</a>
+                <a href="login.html"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
             </div>
         </nav>
     </header>
@@ -64,9 +68,9 @@
 
         <aside class="painel tendencias">
             <h2>Em alta</h2>
-            <a href="catalogo.html">#CantoDoTucano</a>
-            <a href="catalogo.html">#BemTeViNews</a>
-            <a href="catalogo.html">#CalopsitaTalk</a>
+            <a href="catalogo.html"><i class="fa-solid fa-hashtag" aria-hidden="true"></i>CantoDoTucano</a>
+            <a href="catalogo.html"><i class="fa-solid fa-hashtag" aria-hidden="true"></i>BemTeViNews</a>
+            <a href="catalogo.html"><i class="fa-solid fa-hashtag" aria-hidden="true"></i>CalopsitaTalk</a>
         </aside>
     </main>
 
@@ -76,6 +80,8 @@
         <i class="fa-solid fa-feather cursor-icon"></i>
     </div>
     <script src="armazenamento.js"></script>
+    <script src="estado.js"></script>
+    <script src="aparencia.js"></script>
     <script src="cursor.js"></script>
     <script src="hub.js"></script>
 </body>
