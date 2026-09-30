@@ -23,7 +23,8 @@ if (formCadastro) {
             senha: document.getElementById("cadastroSenha").value,
         };
 
-        botao.disabled = true;
+        formCadastro.setAttribute("aria-busy", "true");
+        definirBotaoCarregando(botao, true, "Criando perfil...");
         definirMensagem(mensagem, "Criando perfil...", "carregando");
 
         try {
@@ -31,11 +32,12 @@ if (formCadastro) {
             iniciarSessao(usuarioCriado.id);
             definirMensagem(mensagem, "Perfil criado! Abrindo sua pagina...", "sucesso");
             setTimeout(() => {
-                window.location.href = "perfil.html";
+                navegarComTransicao("perfil.html");
             }, 600);
         } catch (erro) {
             definirMensagem(mensagem, erro.message, "erro");
-            botao.disabled = false;
+            definirBotaoCarregando(botao, false);
+            formCadastro.removeAttribute("aria-busy");
         }
     });
 }
@@ -45,20 +47,33 @@ if (formLogin) {
         evento.preventDefault();
 
         const mensagem = document.getElementById("mensagemLogin");
+        const botao = formLogin.querySelector("button[type='submit']");
         const usuario = document.getElementById("loginUsuario").value.trim();
         const senha = document.getElementById("loginSenha").value;
 
+        formLogin.setAttribute("aria-busy", "true");
+        definirBotaoCarregando(botao, true, "Verificando...");
         definirMensagem(mensagem, "Verificando...", "carregando");
-        const usuarioEncontrado = await autenticarUsuario(usuario, senha);
 
-        if (usuarioEncontrado) {
-            iniciarSessao(usuarioEncontrado.id);
-            definirMensagem(mensagem, "Login aceito! Indo para o perfil...", "sucesso");
-            setTimeout(() => {
-                window.location.href = "perfil.html";
-            }, 600);
-        } else {
+        try {
+            const usuarioEncontrado = await autenticarUsuario(usuario, senha);
+
+            if (usuarioEncontrado) {
+                iniciarSessao(usuarioEncontrado.id);
+                definirMensagem(mensagem, "Login aceito! Indo para o perfil...", "sucesso");
+                setTimeout(() => {
+                    navegarComTransicao("perfil.html");
+                }, 600);
+                return;
+            }
+
             definirMensagem(mensagem, "Usuario ou senha nao combinam.", "erro");
+            definirBotaoCarregando(botao, false);
+            formLogin.removeAttribute("aria-busy");
+        } catch (erro) {
+            definirMensagem(mensagem, "Nao foi possivel verificar o login. Tente novamente.", "erro");
+            definirBotaoCarregando(botao, false);
+            formLogin.removeAttribute("aria-busy");
         }
     });
 }

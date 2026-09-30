@@ -50,6 +50,7 @@
     --cursor-dark: #0d363a;
 
     --duracao-transicao: 0.2s;
+    --duracao-pagina: 0.28s;
 }
 
 /* Respeita quem prefere menos movimento na tela: as animacoes do site
@@ -70,6 +71,74 @@
 body {
     font-family: var(--fonte-corpo);
     color: var(--cor-texto);
+}
+
+/* ---------- Carregamento e transicao entre paginas ---------- */
+body.pagina-carregando {
+    overflow: hidden;
+}
+
+body > :not(.tela-carregamento):not(.cursor) {
+    transition: opacity var(--duracao-pagina) ease;
+}
+
+body.pagina-carregando > :not(.tela-carregamento):not(.cursor),
+body.pagina-saindo > :not(.tela-carregamento):not(.cursor) {
+    opacity: 0;
+}
+
+.tela-carregamento {
+    position: fixed;
+    inset: 0;
+    z-index: 99998;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 50% 35%, rgba(123, 224, 196, 0.22), transparent 35%),
+        var(--cor-marca-escura);
+    color: var(--cor-creme);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--duracao-pagina) ease, visibility var(--duracao-pagina) ease;
+}
+
+body:not(.pagina-carregando) .tela-carregamento {
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.carregamento-conteudo {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.carregamento-conteudo > i {
+    color: var(--cor-amarelo);
+    font-size: 34px;
+}
+
+.carregamento-conteudo strong {
+    font-family: var(--fonte-titulo);
+    font-size: clamp(1.2rem, 4vw, 1.65rem);
+}
+
+.carregamento-conteudo p {
+    margin: 0;
+    color: var(--cor-verde-agua);
+    font-weight: 700;
+}
+
+.carregamento-anel {
+    width: 34px;
+    height: 34px;
+    border: 4px solid rgba(255, 249, 237, 0.25);
+    border-top-color: var(--cor-amarelo);
+    border-radius: 50%;
+    animation: girar 0.8s linear infinite;
 }
 
 h1,
@@ -115,6 +184,32 @@ h3 {
     }
 }
 
+@keyframes confirmarClique {
+    50% {
+        transform: scale(0.96);
+    }
+}
+
+@keyframes atualizarMensagem {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes brilhoEsqueleto {
+    from {
+        background-position: 180% 0;
+    }
+    to {
+        background-position: -180% 0;
+    }
+}
+
 .painel,
 .post,
 .card-catalogo,
@@ -125,7 +220,35 @@ h3 {
 .capa-perfil,
 .hero-catalogo .topo,
 .intro {
-    animation: surgir 0.6s ease both;
+    animation: surgir 0.6s ease backwards;
+}
+
+.post,
+.card-catalogo,
+.cartao-auth {
+    transition: transform var(--duracao-transicao) ease,
+        box-shadow var(--duracao-transicao) ease,
+        border-color var(--duracao-transicao) ease,
+        opacity var(--duracao-transicao) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .post:hover,
+    .card-catalogo:hover,
+    .cartao-auth:hover {
+        transform: translateY(-4px);
+        border-color: rgba(13, 107, 99, 0.34);
+        box-shadow: 0 18px 38px rgba(24, 51, 47, 0.15);
+    }
+}
+
+.conteudo-saindo > * {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+.interacao-confirmada {
+    animation: confirmarClique 0.18s ease;
 }
 
 /* Cartoes repetidos (posts do feed, cards do catalogo) entram em sequencia
@@ -399,6 +522,23 @@ button:disabled,
     opacity: 0.85;
 }
 
+button.em-carregamento,
+.rotulo-arquivo.em-carregamento span {
+    cursor: wait;
+}
+
+button.em-carregamento::before,
+.rotulo-arquivo.em-carregamento span::before {
+    content: "";
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: girar 0.7s linear infinite;
+}
+
 .botao-link {
     width: auto;
 }
@@ -492,6 +632,10 @@ button:disabled,
     transition: color 0.2s ease;
 }
 
+.mensagem.mensagem-ativa {
+    animation: atualizarMensagem 0.22s ease both;
+}
+
 .mensagem.sucesso {
     color: var(--cor-sucesso);
 }
@@ -524,6 +668,51 @@ button:disabled,
     border-top-color: transparent;
     border-radius: 50%;
     animation: girar 0.7s linear infinite;
+}
+
+/* Reservas visuais exibidas enquanto os cards externos do catalogo chegam. */
+.card-catalogo.esqueleto {
+    min-height: 340px;
+    pointer-events: none;
+}
+
+.bloco-esqueleto,
+.imagem-carregando {
+    background: linear-gradient(
+        100deg,
+        #e4ece7 30%,
+        #f7faf8 45%,
+        #e4ece7 60%
+    );
+    background-size: 220% 100%;
+    animation: brilhoEsqueleto 1.25s ease-in-out infinite;
+}
+
+.bloco-esqueleto {
+    height: 18px;
+    border-radius: 6px;
+}
+
+.bloco-esqueleto.imagem {
+    height: 210px;
+}
+
+.bloco-esqueleto.titulo {
+    width: 72%;
+    margin-inline: auto;
+}
+
+.bloco-esqueleto.botao {
+    height: 44px;
+    border-radius: var(--raio-botao);
+}
+
+.card-catalogo img {
+    transition: opacity 0.25s ease;
+}
+
+.card-catalogo img.imagem-carregando {
+    opacity: 0.45;
 }
 
 /* ---------- Papel de parede personalizavel ----------

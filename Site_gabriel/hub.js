@@ -52,9 +52,9 @@ function renderizarFeed() {
                 </div>
             </div>
             <p>${escaparHTML(post.texto)}</p>
-            ${post.imagemUrl ? `<img src="${post.imagemUrl}" alt="Foto da postagem">` : ""}
+            ${post.imagemUrl ? `<img src="${post.imagemUrl}" alt="Foto da postagem" loading="lazy">` : ""}
             <div class="acoes-post">
-                <button type="button" class="botao-curtir" data-id="${post.id}" ${
+                <button type="button" class="botao-curtir" data-id="${post.id}" aria-pressed="${jaCurtiu}" ${
             usuarioAtual ? "" : "disabled title='Crie um perfil para curtir'"
         }>
                     ${jaCurtiu ? '<i class="fa-solid fa-heart" aria-hidden="true"></i>Descurtir' : '<i class="fa-regular fa-heart" aria-hidden="true"></i>Curtir'} (${post.curtidas.length})
@@ -76,20 +76,30 @@ function renderizarFeed() {
 if (campoFotoPost) {
     campoFotoPost.addEventListener("change", async () => {
         const arquivo = campoFotoPost.files[0];
+        const rotuloArquivo = campoFotoPost.closest(".rotulo-arquivo");
         imagemPostSelecionada = null;
         previaImagemPost.hidden = true;
 
         if (!arquivo) return;
+
+        campoFotoPost.disabled = true;
+        rotuloArquivo?.classList.add("em-carregamento");
+        rotuloArquivo?.setAttribute("aria-busy", "true");
+        definirMensagem(mensagemPost, "Preparando imagem...", "carregando");
 
         try {
             validarArquivoDeImagem(arquivo);
             imagemPostSelecionada = await redimensionarImagem(arquivo);
             previaImagemPost.src = imagemPostSelecionada;
             previaImagemPost.hidden = false;
-            definirMensagem(mensagemPost, "");
+            definirMensagem(mensagemPost, "Imagem pronta para publicar.", "sucesso");
         } catch (erro) {
             definirMensagem(mensagemPost, erro.message, "erro");
             campoFotoPost.value = "";
+        } finally {
+            campoFotoPost.disabled = false;
+            rotuloArquivo?.classList.remove("em-carregamento");
+            rotuloArquivo?.removeAttribute("aria-busy");
         }
     });
 }
@@ -113,7 +123,7 @@ if (formNovoPost) {
         if (campoFotoPost) campoFotoPost.value = "";
         imagemPostSelecionada = null;
         previaImagemPost.hidden = true;
-        definirMensagem(mensagemPost, "");
+        definirMensagem(mensagemPost, "Post publicado!", "sucesso");
         renderizarFeed();
     });
 }
