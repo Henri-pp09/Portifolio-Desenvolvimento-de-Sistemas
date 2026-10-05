@@ -129,3 +129,17 @@ footer a {
         font-size: 34px;
     }
 }
+
+/* Estados individuais preservam o espaço do card mesmo sem mídia. */
+.area-foto { min-width: 0; }
+.area-foto [hidden] { display: none; }
+.credito-foto { display: block; margin-top: 6px; font-size: 11px; color: var(--cor-verde-escuro); overflow-wrap: anywhere; }
+.nome-cientifico, .audio-indisponivel { margin: 0; font-size: 14px; }
+.botao-favorito { background: var(--cor-fundo); box-shadow: none; border-color: var(--cor-borda); }
+.botao-favorito[aria-pressed="true"] { background: var(--cor-amarelo); }
+.area-foto { position: relative; }
+.area-foto img { display: block; }
+.area-foto:has(img) .sem-foto { position: absolute; inset: 0 0 auto; }
+/* O texto de status e a grade não podem aumentar a coluna no celular. */
+main { grid-template-columns: minmax(0, 1fr); }
+main > * { min-width: 0; max-width: 100%; }

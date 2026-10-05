@@ -117,7 +117,16 @@ if (formNovoPost) {
         const texto = campoTexto.value.trim();
         if (!texto) return;
 
-        criarPost(usuarioAtual, texto, imagemPostSelecionada);
+        if (campoFotoPost?.disabled) {
+            definirMensagem(mensagemPost, "Aguarde a preparação da imagem antes de publicar.", "carregando");
+            return;
+        }
+        try {
+            criarPost(usuarioAtual, texto, imagemPostSelecionada);
+        } catch (erro) {
+            definirMensagem(mensagemPost, "Não foi possível salvar. O armazenamento pode estar cheio; tente uma foto menor.", "erro");
+            return;
+        }
 
         campoTexto.value = "";
         if (campoFotoPost) campoFotoPost.value = "";

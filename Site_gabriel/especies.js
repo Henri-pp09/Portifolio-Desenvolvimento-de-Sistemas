@@ -1,61 +1,263 @@
-// especies.js
-// Lista unica das especies do catalogo. Usada por catalogo.js (foto + audio +
-// nome cientifico) e por perfil.js (selecao de aves favoritas), para nao
-// cadastrar os mesmos passaros duas vezes em arquivos diferentes.
-//
-// SOBRE A FONTE DO AUDIO (importante):
-// A ideia original era buscar o audio ao vivo direto na API do Xeno-canto
-// (https://xeno-canto.org/api/2/recordings). Isso parou de funcionar: o
-// dominio xeno-canto.org passou a bloquear qualquer pedido automatizado -
-// inclusive chamadas feitas por fetch() do navegador - com uma protecao
-// anti-robo chamada Anubis/BotStopper. Toda tentativa de acessar o endpoint
-// da API (nao so a pagina de documentacao) retorna uma pagina HTML de
-// "Access Denied" no lugar do JSON esperado. Por isso os audios abaixo usam
-// os arquivos MP3 que ja existiam no projeto, e os nomes cientificos foram
-// conferidos manualmente (alguns estavam incorretos/fictícios no catalogo
-// antigo). A funcao que buscava no Xeno-canto continua em catalogo.js,
-// comentada, para o caso de isso ser resolvido no futuro (ex.: usando uma
-// chave da API v3, se ela nao estiver atras do mesmo bloqueio).
-
-// Controla quantas especies o catalogo carrega de uma vez. Aumente este
-// numero conforme mais especies forem adicionadas na lista abaixo.
-const QUANTIDADE_ESPECIES = 20;
-
+// Fonte única do catálogo e do seletor de favoritos do perfil.
+// Novas aves: nomes conferidos no WikiAves; fonteUrl aponta para cada ficha.
+// URLs antigas preservadas, mas os MP3 não estão nesta versão do repositório.
+// Ao restaurar cada arquivo, altere audioDisponivel para true.
+// Novos áudios e fotos locais não disponíveis são null.
 const ESPECIES_CATALOGO = [
     {
         id: "tucano-toco",
+        nomePopular: "Tucano-toco",
         nomeCientifico: "Ramphastos toco",
+        audioDisponivel: false,
         audioUrl: "Audio de passaros/Canto_Tucano_Toco.mp3",
         fotoLocal: "foto de passaros/tucano_toco.jpg",
     },
     {
         id: "bem-te-vi",
+        nomePopular: "Bem-te-vi",
         nomeCientifico: "Pitangus sulphuratus",
+        audioDisponivel: false,
         audioUrl: "Audio de passaros/Canto_BemTevi.mp3",
         fotoLocal: "foto de passaros/Bem_Te_Vi.jpg",
     },
     {
         id: "calopsita",
+        nomePopular: "Calopsita",
         nomeCientifico: "Nymphicus hollandicus",
+        audioDisponivel: false,
         audioUrl: "Audio de passaros/Calopsitas Cantando.mp3",
         fotoLocal: "foto de passaros/prikito.jpg",
     },
     {
         id: "cacatua",
+        nomePopular: "Cacatua",
         nomeCientifico: "Cacatua galerita",
+        audioDisponivel: false,
         audioUrl: "Audio de passaros/Canto_Cacatua.mp3",
         fotoLocal: "foto de passaros/cacatua.jpg",
     },
     {
         id: "papagaio",
+        nomePopular: "Papagaio",
         nomeCientifico: "Amazona aestiva",
+        audioDisponivel: false,
         audioUrl: "Audio de passaros/Canto_Papagaio.mp3",
         fotoLocal: "foto de passaros/bicos-de-passaros.jpg",
     },
     {
         id: "maritaca",
+        nomePopular: "Maritaca",
         nomeCientifico: "Pionus maximiliani",
+        audioDisponivel: false,
         audioUrl: "Audio de passaros/Canto_Maritaca.mp3",
         fotoLocal: "foto de passaros/maritaca.jpg",
+    },
+    {
+        id: "sabia-laranjeira",
+        nomePopular: "Sabiá-laranjeira",
+        nomeCientifico: "Turdus rufiventris",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/sabia-laranjeira",
+    },
+    {
+        id: "sabia-barranco",
+        nomePopular: "Sabiá-barranco",
+        nomeCientifico: "Turdus leucomelas",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/sabia-barranco",
+    },
+    {
+        id: "sabia-poca",
+        nomePopular: "Sabiá-poca",
+        nomeCientifico: "Turdus amaurochalinus",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/sabia-poca",
+    },
+    {
+        id: "sanhaco-cinzento",
+        nomePopular: "Sanhaço-cinzento",
+        nomeCientifico: "Thraupis sayaca",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/sanhaco-cinzento",
+    },
+    {
+        id: "sanhaco-do-coqueiro",
+        nomePopular: "Sanhaço-do-coqueiro",
+        nomeCientifico: "Thraupis palmarum",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/sanhaco-do-coqueiro",
+    },
+    {
+        id: "saira-sete-cores",
+        nomePopular: "Saíra-sete-cores",
+        nomeCientifico: "Tangara seledon",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/saira-sete-cores",
+    },
+    {
+        id: "pica-pau-do-campo",
+        nomePopular: "Pica-pau-do-campo",
+        nomeCientifico: "Colaptes campestris",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/pica-pau-do-campo",
+    },
+    {
+        id: "pica-pau-verde-barrado",
+        nomePopular: "Pica-pau-verde-barrado",
+        nomeCientifico: "Colaptes melanochloros",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/pica-pau-verde-barrado",
+    },
+    {
+        id: "beija-flor-tesoura",
+        nomePopular: "Beija-flor-tesoura",
+        nomeCientifico: "Eupetomena macroura",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/beija-flor-tesoura",
+    },
+    {
+        id: "beija-flor-preto",
+        nomePopular: "Beija-flor-preto",
+        nomeCientifico: "Florisuga fusca",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/beija-flor-preto",
+    },
+    {
+        id: "arara-caninde",
+        nomePopular: "Arara-canindé",
+        nomeCientifico: "Ara ararauna",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/arara-caninde",
+    },
+    {
+        id: "arara-vermelha",
+        nomePopular: "Arara-vermelha",
+        nomeCientifico: "Ara chloropterus",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/arara-vermelha",
+    },
+    {
+        id: "arara-azul-grande",
+        nomePopular: "Arara-azul-grande",
+        nomeCientifico: "Anodorhynchus hyacinthinus",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/arara-azul",
+    },
+    {
+        id: "periquitao",
+        nomePopular: "Periquitão",
+        nomeCientifico: "Psittacara leucophthalmus",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/periquitao",
+    },
+    {
+        id: "periquito-rico",
+        nomePopular: "Periquito-rico",
+        nomeCientifico: "Brotogeris tirica",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/periquito-rico",
+    },
+    {
+        id: "cardeal",
+        nomePopular: "Cardeal",
+        nomeCientifico: "Paroaria coronata",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/cardeal",
+    },
+    {
+        id: "canario-da-terra",
+        nomePopular: "Canário-da-terra",
+        nomeCientifico: "Sicalis flaveola",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/canario-da-terra",
+    },
+    {
+        id: "tico-tico",
+        nomePopular: "Tico-tico",
+        nomeCientifico: "Zonotrichia capensis",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/tico-tico",
+    },
+    {
+        id: "joao-de-barro",
+        nomePopular: "João-de-barro",
+        nomeCientifico: "Furnarius rufus",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/joao-de-barro",
+    },
+    {
+        id: "quero-quero",
+        nomePopular: "Quero-quero",
+        nomeCientifico: "Vanellus chilensis",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/quero-quero",
+    },
+    {
+        id: "coruja-buraqueira",
+        nomePopular: "Coruja-buraqueira",
+        nomeCientifico: "Athene cunicularia",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/coruja-buraqueira",
+    },
+    {
+        id: "carcara",
+        nomePopular: "Carcará",
+        nomeCientifico: "Caracara plancus",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/carcara",
+    },
+    {
+        id: "anu-preto",
+        nomePopular: "Anu-preto",
+        nomeCientifico: "Crotophaga ani",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/anu-preto",
+    },
+    {
+        id: "rolinha-roxa",
+        nomePopular: "Rolinha-roxa",
+        nomeCientifico: "Columbina talpacoti",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/rolinha-roxa",
+    },
+    {
+        id: "jacuguacu",
+        nomePopular: "Jacuguaçu",
+        nomeCientifico: "Penelope obscura",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/jacuguacu",
+    },
+    {
+        id: "seriema",
+        nomePopular: "Seriema",
+        nomeCientifico: "Cariama cristata",
+        audioUrl: null,
+        fotoLocal: null,
+        fonteUrl: "https://www.wikiaves.com.br/wiki/seriema",
     },
 ];

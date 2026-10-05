@@ -126,10 +126,11 @@ if (!usuarioAtual) {
         listaFavoritos.innerHTML = "";
 
         ESPECIES_CATALOGO.forEach((especie) => {
-            const favoritado = (usuarioAtual.favoritos || []).includes(especie.id);
+            const favoritado = listarFavoritos(usuarioAtual.id).includes(especie.id);
 
             const item = document.createElement("button");
             item.type = "button";
+            item.setAttribute("aria-pressed", String(favoritado));
             item.className = favoritado ? "tag-favorito ativo" : "tag-favorito";
             item.innerHTML = `${favoritado ? "★" : "☆"} <em>${escaparHTML(especie.nomeCientifico)}</em>`;
 
