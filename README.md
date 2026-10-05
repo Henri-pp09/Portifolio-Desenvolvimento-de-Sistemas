@@ -29,7 +29,6 @@ Git/GitHub e desenvolvimento web.
 - JavaScript
 - APIs
 - Font Awesome
-- GitHub
 
 ## 📚 O que estou aprendendo
 
