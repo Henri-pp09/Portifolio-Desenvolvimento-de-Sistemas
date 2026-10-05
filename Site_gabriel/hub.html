@@ -3,22 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <title>Aviario Sonoro</title>
     <link rel="stylesheet" href="hub.css">
-    <link rel="stylesheet" href="sobre.css">
+    <link rel="stylesheet" href="ui.css">
 </head>
-<body>
+<body class="fundo-personalizavel pagina-carregando">
+    <div class="tela-carregamento" role="status" aria-live="polite" aria-label="Carregando pagina">
+        <div class="carregamento-conteudo">
+            <i class="fa-solid fa-feather" aria-hidden="true"></i>
+            <strong>Aviario Sonoro</strong>
+            <span class="carregamento-anel" aria-hidden="true"></span>
+            <p>Preparando o ninho...</p>
+        </div>
+    </div>
     <header class="barra-site">
         <nav>
-            <a class="marca" href="hub.html">Aviario Sonoro</a>
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviario Sonoro</a>
             <div class="links-nav">
-                <a href="catalogo.html">Catalogo</a>
-                <a href="perfil.html">Perfil</a>
-                <a href="sobre.html">Sobre o projeto</a>
-                <a href="login.html">Login</a>
+                <a href="hub.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i>Feed</a>
+                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catalogo</a>
+                <a href="perfil.html"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Perfil</a>
+                <a href="login.html"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
             </div>
         </nav>
     </header>
+
+    <section class="sobre-projeto">
+        <div class="sobre-conteudo">
+            <p class="etiqueta">conheça sobre</p>
+            <h2>O que é o Aviario Sonoro?</h2>
+            <p>O Aviario Sonoro é uma rede social feita para quem ama passaros. Aqui voce pode compartilhar fotos, cantos e curiosidades sobre as aves, alem de explorar um catalogo com informacoes sobre diferentes especies.</p>
+            <p>O objetivo do projeto e criar um espaco simples e divertido para conectar pessoas apaixonadas por passaros, incentivando a troca de conhecimento e a observacao da natureza.</p>
+        </div>
+    </section>
 
     <main class="layout-social">
         <aside class="painel lateral">
@@ -29,8 +50,8 @@
                     <span id="usuarioHub">@visitante</span>
                 </div>
             </div>
-            <a class="botao-link" href="cadastro.html">Criar perfil</a>
-            <a class="link-secundario" href="perfil.html">Ver meu perfil</a>
+            <a class="botao-link" href="cadastro.html"><i class="fa-solid fa-user-plus" aria-hidden="true"></i>Criar perfil</a>
+            <a class="link-secundario" href="perfil.html"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Ver meu perfil</a>
         </aside>
 
         <section class="feed">
@@ -49,11 +70,11 @@
                 <form id="formNovoPost" class="campo-post">
                     <textarea id="textoPost" placeholder="Compartilhe um canto, uma foto ou uma fofoca de passaros..." required></textarea>
                     <label class="rotulo-arquivo">
-                        Adicionar foto (opcional)
+                        <span><i class="fa-solid fa-images" aria-hidden="true"></i>Adicionar foto (opcional)</span>
                         <input type="file" id="imagemPost" accept="image/*">
                     </label>
                     <img id="previaImagemPost" class="previa-imagem" hidden>
-                    <button type="submit">Publicar</button>
+                    <button type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i>Publicar</button>
                 </form>
                 <p class="mensagem" id="mensagemPost"></p>
             </div>
@@ -63,14 +84,20 @@
 
         <aside class="painel tendencias">
             <h2>Em alta</h2>
-            <a href="catalogo.html">#CantoDoTucano</a>
-            <a href="catalogo.html">#BemTeViNews</a>
-            <a href="catalogo.html">#CalopsitaTalk</a>
+            <a href="catalogo.html"><i class="fa-solid fa-hashtag" aria-hidden="true"></i>CantoDoTucano</a>
+            <a href="catalogo.html"><i class="fa-solid fa-hashtag" aria-hidden="true"></i>BemTeViNews</a>
+            <a href="catalogo.html"><i class="fa-solid fa-hashtag" aria-hidden="true"></i>CalopsitaTalk</a>
         </aside>
     </main>
 
-    <div class="cursor"></div>
+    <div class="cursor" aria-hidden="true">
+        <span class="cursor-ring"></span>
+        <span class="cursor-dot"></span>
+        <i class="fa-solid fa-feather cursor-icon"></i>
+    </div>
     <script src="armazenamento.js"></script>
+    <script src="estado.js"></script>
+    <script src="aparencia.js"></script>
     <script src="cursor.js"></script>
     <script src="hub.js"></script>
 </body>

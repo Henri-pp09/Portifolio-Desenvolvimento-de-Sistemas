@@ -22,7 +22,7 @@ if (!usuarioAtual) {
         avatarEl.style.backgroundPosition = "center";
         avatarEl.textContent = "";
     } else {
-        avatarEl.textContent = iniciais(usuarioAtual.nome);
+        avatarEl.innerHTML = `<i class="fa-solid fa-fish" aria-hidden="true"></i>`;
     }
 
     const capaPerfil = document.getElementById("capaPerfil");
@@ -46,11 +46,11 @@ if (!usuarioAtual) {
             artigo.className = "post";
             artigo.innerHTML = `
                 <div class="topo-post">
-                    <div class="avatar">${iniciais(usuarioAtual.nome)}</div>
+                    <div class="avatar"><i class="fa-solid fa-fish" aria-hidden="true"></i></div>
                     <div><strong>${escaparHTML(usuarioAtual.nome)}</strong></div>
                 </div>
                 <p>${escaparHTML(post.texto)}</p>
-                ${post.imagemUrl ? `<img src="${post.imagemUrl}" alt="Foto da postagem">` : ""}
+                ${post.imagemUrl ? `<img src="${post.imagemUrl}" alt="Foto da postagem" loading="lazy">` : ""}
                 <div class="acoes-post">
                     <span>${post.curtidas.length} curtida(s)</span>
                 </div>
@@ -69,14 +69,24 @@ if (!usuarioAtual) {
             const arquivo = campoAvatar.files[0];
             if (!arquivo) return;
 
+            const rotuloArquivo = campoAvatar.closest(".rotulo-arquivo");
+            campoAvatar.disabled = true;
+            rotuloArquivo?.classList.add("em-carregamento");
+            rotuloArquivo?.setAttribute("aria-busy", "true");
+            definirMensagem(mensagemImagens, "Processando foto de perfil...", "carregando");
+
             try {
                 validarArquivoDeImagem(arquivo);
                 const dataUrl = await redimensionarImagem(arquivo, 300);
                 atualizarUsuario(usuarioAtual.id, { avatarUrl: dataUrl });
-                mensagemImagens.textContent = "Foto de perfil atualizada!";
-                setTimeout(() => window.location.reload(), 500);
+                definirMensagem(mensagemImagens, "Foto de perfil atualizada!", "sucesso");
+                setTimeout(() => navegarComTransicao(window.location.href), 500);
             } catch (erro) {
-                mensagemImagens.textContent = erro.message;
+                definirMensagem(mensagemImagens, erro.message, "erro");
+            } finally {
+                campoAvatar.disabled = false;
+                rotuloArquivo?.classList.remove("em-carregamento");
+                rotuloArquivo?.removeAttribute("aria-busy");
             }
         });
     }
@@ -86,14 +96,24 @@ if (!usuarioAtual) {
             const arquivo = campoBanner.files[0];
             if (!arquivo) return;
 
+            const rotuloArquivo = campoBanner.closest(".rotulo-arquivo");
+            campoBanner.disabled = true;
+            rotuloArquivo?.classList.add("em-carregamento");
+            rotuloArquivo?.setAttribute("aria-busy", "true");
+            definirMensagem(mensagemImagens, "Processando banner...", "carregando");
+
             try {
                 validarArquivoDeImagem(arquivo);
                 const dataUrl = await redimensionarImagem(arquivo, 1200);
                 atualizarUsuario(usuarioAtual.id, { bannerUrl: dataUrl });
-                mensagemImagens.textContent = "Banner atualizado!";
-                setTimeout(() => window.location.reload(), 500);
+                definirMensagem(mensagemImagens, "Banner atualizado!", "sucesso");
+                setTimeout(() => navegarComTransicao(window.location.href), 500);
             } catch (erro) {
-                mensagemImagens.textContent = erro.message;
+                definirMensagem(mensagemImagens, erro.message, "erro");
+            } finally {
+                campoBanner.disabled = false;
+                rotuloArquivo?.classList.remove("em-carregamento");
+                rotuloArquivo?.removeAttribute("aria-busy");
             }
         });
     }
@@ -132,6 +152,6 @@ const botaoSair = document.getElementById("botaoSair");
 if (botaoSair) {
     botaoSair.addEventListener("click", () => {
         encerrarSessao();
-        window.location.href = "hub.html";
+        navegarComTransicao("hub.html");
     });
 }

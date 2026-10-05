@@ -4,44 +4,7 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #eef5f0;
-    color: #18332f;
-}
-
-.barra-site {
-    padding: 18px 20px;
-    background: #0d363a;
-    color: #fff9ed;
-}
-
-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    max-width: 1080px;
-    margin: 0 auto;
-}
-
-.marca {
-    color: #ffcf5c;
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.links-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-}
-
-.links-nav a {
-    color: #fff9ed;
-    text-decoration: none;
-    border-bottom: 2px solid #7be0c4;
-    padding-bottom: 4px;
+    background: var(--cor-fundo);
 }
 
 .pagina-perfil {
@@ -57,11 +20,11 @@ nav {
     gap: 22px;
     min-height: 300px;
     padding: 28px;
-    color: #fff9ed;
+    color: var(--cor-creme);
     background:
         linear-gradient(135deg, rgba(13, 54, 58, 0.96), rgba(255, 122, 69, 0.38)),
         url("Outras Fotos/Frutiger aero wallpaper.jpg") center/cover;
-    border-radius: 8px;
+    border-radius: var(--raio);
     box-shadow: 0 16px 40px rgba(24, 51, 47, 0.16);
 }
 
@@ -71,15 +34,15 @@ nav {
     place-items: center;
     flex: 0 0 auto;
     border-radius: 8px;
-    background: #ffcf5c;
-    color: #0d363a;
+    background: var(--cor-amarelo);
+    color: var(--cor-marca-escura);
     font-weight: bold;
 }
 
 .avatar-grande {
     width: 118px;
     height: 118px;
-    border: 5px solid #fff9ed;
+    border: 5px solid var(--cor-creme);
     font-size: 36px;
 }
 
@@ -90,10 +53,6 @@ nav {
 
 .etiqueta {
     margin: 0 0 8px;
-    color: #7be0c4;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 h1 {
@@ -120,26 +79,6 @@ h1 {
     border-radius: 6px;
 }
 
-.botao-link,
-button {
-    display: inline-block;
-    padding: 11px 18px;
-    border: none;
-    background: #ff7a45;
-    color: #122c2f;
-    cursor: pointer;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.25s;
-}
-
-.botao-link:hover,
-button:hover {
-    background: #ffcf5c;
-    transform: translateY(-2px);
-}
-
 .grade-perfil {
     display: grid;
     grid-template-columns: 290px 1fr;
@@ -150,10 +89,6 @@ button:hover {
 .painel,
 .post {
     padding: 22px;
-    background: #ffffff;
-    border: 1px solid #cfe2d6;
-    border-radius: 8px;
-    box-shadow: 0 14px 32px rgba(24, 51, 47, 0.1);
 }
 
 .painel h2,
@@ -171,17 +106,13 @@ button:hover {
 }
 
 .rotulo-arquivo {
-    display: grid;
-    gap: 6px;
     margin-top: 10px;
-    font-size: 14px;
-    font-weight: bold;
 }
 
 .mensagem {
     min-height: 20px;
     margin: 8px 0 0;
-    color: #0d6b63;
+    color: var(--cor-verde-escuro);
     font-weight: bold;
 }
 
@@ -193,18 +124,26 @@ button:hover {
 
 .tag-favorito {
     padding: 8px 12px;
-    border: 1px solid #cfe2d6;
+    border: 1px solid var(--cor-borda);
     border-radius: 999px;
-    background: #eef5f0;
-    color: #18332f;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
     cursor: pointer;
     font-size: 13px;
+    font-weight: normal;
+    min-height: 0;
+    box-shadow: none;
     transition: 0.2s;
 }
 
+.tag-favorito:hover {
+    background: var(--cor-borda);
+    transform: none;
+}
+
 .tag-favorito.ativo {
-    background: #ffcf5c;
-    border-color: #ffcf5c;
+    background: var(--cor-amarelo);
+    border-color: var(--cor-amarelo);
     color: #18332f;
     font-weight: bold;
 }
@@ -231,7 +170,7 @@ button:hover {
     width: 100%;
     max-height: 380px;
     object-fit: cover;
-    border: 5px solid #ffcf5c;
+    border: 5px solid var(--cor-amarelo);
     border-radius: 8px;
 }
 
@@ -242,33 +181,10 @@ button:hover {
     margin-top: 14px;
 }
 
-* {
-    cursor: none !important;
-}
-
-.cursor {
-    width: 40px;
-    height: 40px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    background: url("Outras Fotos/Cursor_De_Passaro.png") no-repeat center;
-    transform: translate(-50%, -50%);
-    transition: transform 0.05s linear;
-    z-index: 20;
-}
-
 @media (max-width: 760px) {
-    nav,
     .capa-perfil,
     .grade-perfil {
         grid-template-columns: 1fr;
-    }
-
-    nav {
-        align-items: flex-start;
-        flex-direction: column;
     }
 
     .capa-perfil {

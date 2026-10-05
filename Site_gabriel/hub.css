@@ -4,55 +4,7 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #eef5f0;
-    color: #18332f;
-}
-
-.barra-site {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    padding: 18px 20px;
-    background: #0d363a;
-    color: #fff9ed;
-    box-shadow: 0 8px 24px rgba(13, 54, 58, 0.18);
-}
-
-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    max-width: 1180px;
-    margin: 0 auto;
-}
-
-.marca {
-    color: #ffcf5c;
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.links-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-}
-
-.links-nav a,
-.link-secundario,
-.tendencias a {
-    color: #0d6b63;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.links-nav a {
-    color: #fff9ed;
-    border-bottom: 2px solid #7be0c4;
-    padding-bottom: 4px;
+    background: var(--cor-fundo);
 }
 
 .layout-social {
@@ -62,14 +14,6 @@ nav {
     max-width: 1180px;
     margin: 0 auto;
     padding: 28px 20px 44px;
-}
-
-.painel,
-.post {
-    background: #ffffff;
-    border: 1px solid #cfe2d6;
-    border-radius: 8px;
-    box-shadow: 0 14px 32px rgba(24, 51, 47, 0.1);
 }
 
 .painel {
@@ -94,6 +38,17 @@ nav {
     margin-bottom: 18px;
 }
 
+.link-secundario {
+    display: inline-block;
+    color: var(--cor-verde-escuro);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link-secundario:hover {
+    text-decoration: underline;
+}
+
 .mini-perfil span,
 .topo-post span {
     display: block;
@@ -108,37 +63,9 @@ nav {
     width: 46px;
     height: 46px;
     border-radius: 8px;
-    background: #ffcf5c;
-    color: #0d363a;
+    background: var(--cor-amarelo);
+    color: var(--cor-marca-escura);
     font-weight: bold;
-}
-
-.botao-link,
-button,
-.botao-menor {
-    display: inline-block;
-    padding: 11px 18px;
-    border: none;
-    background: #ff7a45;
-    color: #122c2f;
-    cursor: pointer;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.25s;
-}
-
-.botao-link {
-    width: 100%;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-.botao-link:hover,
-button:hover,
-.botao-menor:hover {
-    background: #ffcf5c;
-    transform: translateY(-2px);
 }
 
 .feed {
@@ -146,19 +73,45 @@ button:hover,
     gap: 18px;
 }
 
+/* ---------- Secao "Conheça sobre" (pagina inicial) ---------- */
+.sobre-projeto {
+    padding: 28px 20px 0;
+}
+
+.sobre-conteudo {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(13, 54, 58, 0.96), rgba(123, 224, 196, 0.28)), url("Outras Fotos/Frutiger aero wallpaper.jpg") center/cover;
+    color: var(--cor-creme);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-cartao);
+}
+
+.sobre-conteudo h2 {
+    margin: 0 0 10px;
+    font-size: 26px;
+}
+
+.sobre-conteudo p {
+    margin: 0 0 10px;
+    line-height: 1.5;
+}
+
+.sobre-conteudo p:last-child {
+    margin-bottom: 0;
+}
+
 .composer {
-    color: #fff9ed;
+    color: var(--cor-creme);
     background:
         linear-gradient(135deg, rgba(13, 54, 58, 0.96), rgba(255, 122, 69, 0.34)),
         url("foto de passaros/tucano_toco.jpg") center/cover;
 }
 
-.etiqueta {
+.composer .etiqueta {
     margin: 0 0 8px;
-    color: #7be0c4;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 h1 {
@@ -175,7 +128,7 @@ h1 {
     border: 1px solid rgba(255, 249, 237, 0.3);
     border-radius: 8px;
     background: rgba(255, 249, 237, 0.14);
-    color: #fff9ed;
+    color: var(--cor-creme);
 }
 
 .campo-post textarea {
@@ -185,7 +138,7 @@ h1 {
     border: 1px solid rgba(255, 249, 237, 0.4);
     border-radius: 6px;
     background: rgba(255, 249, 237, 0.92);
-    color: #18332f;
+    color: var(--cor-texto);
     font: inherit;
     resize: vertical;
 }
@@ -193,15 +146,12 @@ h1 {
 .mensagem {
     min-height: 20px;
     margin: 8px 0 0;
-    color: #7be0c4;
+    color: var(--cor-verde-agua);
     font-weight: bold;
 }
 
-.rotulo-arquivo {
-    display: grid;
-    gap: 6px;
+.campo-post .rotulo-arquivo {
     font-size: 14px;
-    color: #fff9ed;
 }
 
 .previa-imagem {
@@ -209,14 +159,7 @@ h1 {
     max-height: 260px;
     object-fit: cover;
     border-radius: 8px;
-    border: 3px solid #ffcf5c;
-}
-
-.botao-curtir:disabled {
-    background: #cad7d0;
-    color: #60706a;
-    cursor: not-allowed;
-    transform: none;
+    border: 3px solid var(--cor-amarelo);
 }
 
 .post {
@@ -231,7 +174,7 @@ h1 {
     width: 100%;
     max-height: 390px;
     object-fit: cover;
-    border: 5px solid #ffcf5c;
+    border: 5px solid var(--cor-amarelo);
     border-radius: 8px;
 }
 
@@ -249,24 +192,10 @@ h1 {
 .tendencias a {
     display: block;
     padding: 11px 0;
-    border-bottom: 1px solid #cfe2d6;
-}
-
-* {
-    cursor: none !important;
-}
-
-.cursor {
-    width: 40px;
-    height: 40px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    background: url("Outras Fotos/Cursor_De_Passaro.png") no-repeat center;
-    transform: translate(-50%, -50%);
-    transition: transform 0.05s linear;
-    z-index: 20;
+    color: var(--cor-verde-escuro);
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 1px solid var(--cor-borda);
 }
 
 @media (max-width: 930px) {
@@ -281,12 +210,11 @@ h1 {
 }
 
 @media (max-width: 640px) {
-    nav {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
     h1 {
         font-size: 32px;
+    }
+
+    .sobre-conteudo h2 {
+        font-size: 22px;
     }
 }

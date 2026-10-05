@@ -1,0 +1,814 @@
+/* ui.css
+ * Estilos COMPARTILHADOS do Aviario Sonoro: cores, cabecalho/menu, botoes,
+ * cartoes, campo de arquivo e cursor personalizado.
+ * Este arquivo e carregado por ULTIMO em todas as paginas, entao os estilos
+ * daqui garantem a mesma aparencia em todo o site.
+ */
+
+:root {
+    /* Paleta de cores inspirada na natureza: floresta, penas de tucano,
+       amanhecer e terra. Usada no site inteiro. */
+    --cor-fundo: #eef5f0;
+    --cor-texto: #18332f;
+    --cor-marca-escura: #0d363a;
+    --cor-creme: #fff9ed;
+    --cor-borda: #cfe2d6;
+    --cor-verde-agua: #7be0c4;
+    --cor-verde-escuro: #0d6b63;
+    --cor-amarelo: #ffcf5c;
+    --cor-laranja: #ff7a45;
+    --cor-terra: #a15c3e;
+    --cor-ceu: #bfe3f0;
+
+    /* Cores de estado (feedback visual) */
+    --cor-sucesso: var(--cor-verde-escuro);
+    --cor-erro: #c1432e;
+    --cor-info: var(--cor-verde-agua);
+
+    /* Tipografia: titulo arredondado e amigavel (identidade propria) +
+       corpo de texto em fonte de sistema, para manter a leitura facil. */
+    --fonte-titulo: "Quicksand", "Segoe UI", Roboto, Arial, sans-serif;
+    --fonte-corpo: "Segoe UI", Roboto, Arial, sans-serif;
+
+    /* Escala de espacamentos usada nos componentes */
+    --espaco-1: 4px;
+    --espaco-2: 8px;
+    --espaco-3: 12px;
+    --espaco-4: 18px;
+    --espaco-5: 28px;
+    --espaco-6: 44px;
+
+    /* Bordas e sombras repetidas em varios componentes */
+    --raio: 8px;
+    --raio-botao: 12px;
+    --raio-grande: 20px;
+    --sombra-cartao: 0 14px 32px rgba(24, 51, 47, 0.1);
+    --sombra-suave: 0 4px 14px rgba(24, 51, 47, 0.08);
+
+    --cursor-teal: #7be0c4;
+    --cursor-yellow: #ffcf5c;
+    --cursor-dark: #0d363a;
+
+    --duracao-transicao: 0.2s;
+    --duracao-pagina: 0.28s;
+}
+
+/* Respeita quem prefere menos movimento na tela: as animacoes do site
+   inteiro (fade-in de cartoes, hover dos botoes, etc.) somem quase por
+   completo em vez de forcar o efeito. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ---------- Base tipografica compartilhada ---------- */
+body {
+    font-family: var(--fonte-corpo);
+    color: var(--cor-texto);
+}
+
+/* ---------- Carregamento e transicao entre paginas ---------- */
+body.pagina-carregando {
+    overflow: hidden;
+}
+
+body > :not(.tela-carregamento):not(.cursor) {
+    transition: opacity var(--duracao-pagina) ease;
+}
+
+body.pagina-carregando > :not(.tela-carregamento):not(.cursor),
+body.pagina-saindo > :not(.tela-carregamento):not(.cursor) {
+    opacity: 0;
+}
+
+.tela-carregamento {
+    position: fixed;
+    inset: 0;
+    z-index: 99998;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 50% 35%, rgba(123, 224, 196, 0.22), transparent 35%),
+        var(--cor-marca-escura);
+    color: var(--cor-creme);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--duracao-pagina) ease, visibility var(--duracao-pagina) ease;
+}
+
+body:not(.pagina-carregando) .tela-carregamento {
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.carregamento-conteudo {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.carregamento-conteudo > i {
+    color: var(--cor-amarelo);
+    font-size: 34px;
+}
+
+.carregamento-conteudo strong {
+    font-family: var(--fonte-titulo);
+    font-size: clamp(1.2rem, 4vw, 1.65rem);
+}
+
+.carregamento-conteudo p {
+    margin: 0;
+    color: var(--cor-verde-agua);
+    font-weight: 700;
+}
+
+.carregamento-anel {
+    width: 34px;
+    height: 34px;
+    border: 4px solid rgba(255, 249, 237, 0.25);
+    border-top-color: var(--cor-amarelo);
+    border-radius: 50%;
+    animation: girar 0.8s linear infinite;
+}
+
+h1,
+h2,
+h3,
+.marca,
+.etiqueta {
+    font-family: var(--fonte-titulo);
+}
+
+h1,
+h2,
+h3 {
+    font-weight: 700;
+}
+
+.etiqueta {
+    color: var(--cor-verde-agua);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ---------- Animacoes e transicoes compartilhadas ----------
+ * Um fade + leve deslize para cima quando os cartoes/paineis aparecem na
+ * tela. Aplicado direto pela tag/classe, entao funciona tanto no HTML
+ * estatico quanto nos cartoes criados via JavaScript (posts, catalogo).
+ */
+@keyframes surgir {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes confirmarClique {
+    50% {
+        transform: scale(0.96);
+    }
+}
+
+@keyframes atualizarMensagem {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes brilhoEsqueleto {
+    from {
+        background-position: 180% 0;
+    }
+    to {
+        background-position: -180% 0;
+    }
+}
+
+.painel,
+.post,
+.card-catalogo,
+.cartao-auth,
+.chamada,
+.sobre-conteudo,
+.composer,
+.capa-perfil,
+.hero-catalogo .topo,
+.intro {
+    animation: surgir 0.6s ease backwards;
+}
+
+.post,
+.card-catalogo,
+.cartao-auth {
+    transition: transform var(--duracao-transicao) ease,
+        box-shadow var(--duracao-transicao) ease,
+        border-color var(--duracao-transicao) ease,
+        opacity var(--duracao-transicao) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .post:hover,
+    .card-catalogo:hover,
+    .cartao-auth:hover {
+        transform: translateY(-4px);
+        border-color: rgba(13, 107, 99, 0.34);
+        box-shadow: 0 18px 38px rgba(24, 51, 47, 0.15);
+    }
+}
+
+.conteudo-saindo > * {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+.interacao-confirmada {
+    animation: confirmarClique 0.18s ease;
+}
+
+/* Cartoes repetidos (posts do feed, cards do catalogo) entram em sequencia
+   em vez de todos de uma vez, para dar uma sensacao de "cascata" suave. */
+.post:nth-of-type(2),
+.card-catalogo:nth-of-type(2) {
+    animation-delay: 0.05s;
+}
+.post:nth-of-type(3),
+.card-catalogo:nth-of-type(3) {
+    animation-delay: 0.1s;
+}
+.post:nth-of-type(4),
+.card-catalogo:nth-of-type(4) {
+    animation-delay: 0.15s;
+}
+.post:nth-of-type(5),
+.card-catalogo:nth-of-type(5) {
+    animation-delay: 0.2s;
+}
+.post:nth-of-type(n + 6),
+.card-catalogo:nth-of-type(n + 6) {
+    animation-delay: 0.25s;
+}
+
+/* ---------- Cabecalho / menu compartilhado ---------- */
+.barra-site {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 18px 20px;
+    background: var(--cor-marca-escura);
+    color: var(--cor-creme);
+    box-shadow: 0 8px 24px rgba(13, 54, 58, 0.18);
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(
+            90deg,
+            var(--cor-verde-agua),
+            var(--cor-amarelo),
+            var(--cor-laranja)
+        )
+        1;
+}
+
+.barra-site nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.marca {
+    display: inline-flex;
+    align-items: center;
+    color: var(--cor-amarelo);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.links-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.links-nav a {
+    color: var(--cor-creme);
+    text-decoration: none;
+    font-weight: bold;
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.links-nav a:hover,
+.links-nav a:focus-visible {
+    border-color: var(--cor-verde-agua);
+}
+
+/* Destaca a pagina em que a pessoa esta agora, marcada no HTML com
+   aria-current="page" (tambem ajuda leitores de tela). */
+.links-nav a[aria-current="page"] {
+    color: var(--cor-amarelo);
+    border-color: var(--cor-amarelo);
+}
+
+@media (max-width: 640px) {
+    .barra-site nav {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* ---------- Cartoes compartilhados (paineis, posts, cards) ---------- */
+.painel,
+.post,
+.cartao-auth,
+.card-catalogo {
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-cartao);
+}
+
+.painel,
+.post,
+.card-catalogo {
+    background: #ffffff;
+}
+
+/* ---------- Cursor personalizado ----------
+ * So e ativado quando existe mouse/trackpad (ver cursor.js).
+ * Um anel suave acompanha o ponteiro e um pontinho central marca a posicao
+ * exata. Fica maior e amarelo ao passar por cima de algo clicavel.
+ */
+body.cursor-personalizado,
+body.cursor-personalizado * {
+    cursor: none !important;
+}
+
+.cursor {
+    position: fixed;
+    inset: 0 auto auto 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.cursor.visivel {
+    opacity: 1;
+}
+
+.cursor-ring {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    left: 0;
+    top: 0;
+    border: 2px solid var(--cursor-teal);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.16s ease, height 0.16s ease, border-color 0.16s ease,
+        background 0.16s ease;
+}
+
+.cursor-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    left: 0;
+    top: 0;
+    background: var(--cursor-dark);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.12s ease, background 0.16s ease;
+}
+
+/* O icone de pena do cursor antigo foi removido: deixava o cursor com
+   aparencia poluida. O anel + ponto sozinhos ficam mais limpos. */
+.cursor-icon {
+    display: none;
+}
+
+.cursor.hover .cursor-ring {
+    width: 40px;
+    height: 40px;
+    border-color: var(--cursor-yellow);
+    background: rgba(255, 207, 92, 0.12);
+}
+
+.cursor.hover .cursor-dot {
+    background: var(--cursor-yellow);
+}
+
+.cursor.clicking .cursor-ring {
+    width: 22px;
+    height: 22px;
+    background: rgba(123, 224, 196, 0.2);
+}
+
+.cursor.clicking .cursor-dot {
+    transform: translate(-50%, -50%) scale(1.3);
+}
+
+@media (pointer: coarse), (max-width: 760px) {
+    .cursor {
+        display: none !important;
+    }
+}
+
+/* Acessibilidade: quem usa teclado nao fica preso a um cursor invisivel. */
+:focus-visible {
+    outline: 3px solid rgba(123, 224, 196, 0.65);
+    outline-offset: 3px;
+}
+
+/* ---------- Icones dentro de links e botoes ---------- */
+.links-nav a i,
+.marca i,
+.botao-link i,
+button i,
+.rotulo-arquivo i,
+.link-secundario i {
+    width: 1.05em;
+    margin-right: 6px;
+    text-align: center;
+}
+
+.avatar-grande i {
+    font-size: 44px;
+}
+
+.avatar i,
+.mini-perfil .avatar i {
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* ---------- Botoes: visual unico do site ---------- */
+button,
+.botao-link,
+.botao-menor {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 11px 20px;
+    border: 1px solid rgba(13, 54, 58, 0.08);
+    border-radius: var(--raio-botao);
+    background: linear-gradient(135deg, var(--cor-laranja), #ff9a5f);
+    color: #122c2f;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    font: inherit;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 6px 0 rgba(13, 54, 58, 0.14), 0 10px 20px rgba(24, 51, 47, 0.1);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+button:hover,
+.botao-link:hover,
+.botao-menor:hover {
+    background: linear-gradient(135deg, var(--cor-amarelo), #ffe28a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 rgba(13, 54, 58, 0.12), 0 14px 26px rgba(24, 51, 47, 0.14);
+}
+
+button:active,
+.botao-link:active,
+.botao-menor:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 0 rgba(13, 54, 58, 0.14), 0 6px 12px rgba(24, 51, 47, 0.1);
+}
+
+button:disabled,
+.botao-link:disabled,
+.botao-menor:disabled {
+    background: #cad7d0;
+    color: #60706a;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.85;
+}
+
+button.em-carregamento,
+.rotulo-arquivo.em-carregamento span {
+    cursor: wait;
+}
+
+button.em-carregamento::before,
+.rotulo-arquivo.em-carregamento span::before {
+    content: "";
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: girar 0.7s linear infinite;
+}
+
+.botao-link {
+    width: auto;
+}
+
+.lateral .botao-link {
+    width: 100%;
+}
+
+.botao-curtir {
+    background: #eef5f0;
+    color: var(--cor-verde-escuro);
+    border-color: var(--cor-borda);
+    box-shadow: 0 4px 0 rgba(13, 54, 58, 0.08);
+}
+
+.botao-curtir:hover {
+    background: var(--cor-amarelo);
+    color: #18332f;
+}
+
+.botao-curtir i {
+    font-size: 1rem;
+}
+
+@media (max-width: 760px) {
+    button,
+    .botao-link,
+    .botao-menor {
+        min-height: 46px;
+    }
+}
+
+/* ---------- Campo de arquivo (foto de perfil / banner / post) ----------
+ * Antes existiam DOIS controles visiveis para o mesmo campo: a caixa
+ * tracejada e, logo abaixo, o botao padrao do navegador ("Escolher
+ * ficheiro"). Agora a caixa (span) e o UNICO botao visivel; o input real
+ * continua no HTML e funcionando normalmente (o navegador ainda abre a
+ * janela de escolher arquivo, e quem usa teclado ainda alcanca o campo),
+ * so escondemos a aparencia padrao dele para nao duplicar o botao.
+ */
+.rotulo-arquivo {
+    display: inline-grid;
+    gap: 6px;
+}
+
+.rotulo-arquivo span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    min-height: 44px;
+    padding: 11px 18px;
+    border: 1px solid rgba(13, 54, 58, 0.08);
+    border-radius: var(--raio-botao);
+    background: var(--cor-verde-escuro);
+    color: var(--cor-creme);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.rotulo-arquivo:hover span {
+    background: var(--cor-marca-escura);
+    transform: translateY(-2px);
+}
+
+.rotulo-arquivo:focus-within span {
+    outline: 3px solid rgba(123, 224, 196, 0.65);
+    outline-offset: 2px;
+}
+
+.rotulo-arquivo input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------- Estados visuais de mensagem: sucesso, erro e carregando ----------
+ * Antes toda mensagem (login, cadastro, post, catalogo...) usava a mesma cor
+ * verde, sem diferenciar erro de sucesso. Agora cada estado tem cor e um
+ * simbolo proprio; quem escreve o JavaScript so precisa adicionar a classe
+ * (ver estado.js).
+ */
+.mensagem {
+    transition: color 0.2s ease;
+}
+
+.mensagem.mensagem-ativa {
+    animation: atualizarMensagem 0.22s ease both;
+}
+
+.mensagem.sucesso {
+    color: var(--cor-sucesso);
+}
+
+.mensagem.sucesso::before {
+    content: "✓ ";
+}
+
+.mensagem.erro {
+    color: var(--cor-erro);
+    font-weight: bold;
+}
+
+.mensagem.erro::before {
+    content: "⚠ ";
+}
+
+.mensagem.carregando {
+    color: var(--cor-verde-escuro);
+}
+
+.mensagem.carregando::before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: girar 0.7s linear infinite;
+}
+
+/* Reservas visuais exibidas enquanto os cards externos do catalogo chegam. */
+.card-catalogo.esqueleto {
+    min-height: 340px;
+    pointer-events: none;
+}
+
+.bloco-esqueleto,
+.imagem-carregando {
+    background: linear-gradient(
+        100deg,
+        #e4ece7 30%,
+        #f7faf8 45%,
+        #e4ece7 60%
+    );
+    background-size: 220% 100%;
+    animation: brilhoEsqueleto 1.25s ease-in-out infinite;
+}
+
+.bloco-esqueleto {
+    height: 18px;
+    border-radius: 6px;
+}
+
+.bloco-esqueleto.imagem {
+    height: 210px;
+}
+
+.bloco-esqueleto.titulo {
+    width: 72%;
+    margin-inline: auto;
+}
+
+.bloco-esqueleto.botao {
+    height: 44px;
+    border-radius: var(--raio-botao);
+}
+
+.card-catalogo img {
+    transition: opacity 0.25s ease;
+}
+
+.card-catalogo img.imagem-carregando {
+    opacity: 0.45;
+}
+
+/* ---------- Papel de parede personalizavel ----------
+ * Escolhido pela pessoa na pagina de perfil (ver aparencia.js) e guardado no
+ * navegador dela. So se aplica em paginas marcadas com a classe
+ * "fundo-personalizavel" no <body>, para nao interferir no visual das
+ * paginas de login/cadastro. Os padroes sao feitos so com gradientes CSS,
+ * entao funcionam sem depender de nenhuma imagem externa.
+ */
+body.fundo-personalizavel[data-papel="folhagem"] {
+    background-color: var(--cor-fundo);
+    background-image: radial-gradient(
+            circle at 18% 22%,
+            rgba(123, 224, 196, 0.4) 0,
+            transparent 42%
+        ),
+        radial-gradient(circle at 82% 4%, rgba(255, 207, 92, 0.3) 0, transparent 38%),
+        radial-gradient(circle at 60% 85%, rgba(13, 107, 99, 0.2) 0, transparent 42%);
+    background-attachment: fixed;
+}
+
+body.fundo-personalizavel[data-papel="amanhecer"] {
+    background-color: var(--cor-fundo);
+    background-image: linear-gradient(180deg, #ffe3b0 0%, #ffd3c2 22%, var(--cor-fundo) 62%);
+    background-attachment: fixed;
+}
+
+body.fundo-personalizavel[data-papel="ninho"] {
+    background-color: #f6ede0;
+    background-image: repeating-linear-gradient(
+        135deg,
+        rgba(161, 92, 62, 0.12) 0 10px,
+        transparent 10px 20px
+    );
+}
+
+/* Seletor de papel de parede (montado por aparencia.js dentro do perfil) */
+.grade-papeis {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 10px 0 4px;
+}
+
+.amostra-papel {
+    display: grid;
+    gap: 6px;
+    justify-items: center;
+    min-height: 0;
+    padding: 10px;
+    background: #ffffff;
+    color: var(--cor-texto);
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    box-shadow: none;
+}
+
+.amostra-papel:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-suave);
+}
+
+.amostra-papel.ativo {
+    outline: 3px solid var(--cor-verde-agua);
+    outline-offset: 2px;
+}
+
+.cor-amostra {
+    display: block;
+    width: 100%;
+    height: 34px;
+    border-radius: 6px;
+    border: 1px solid var(--cor-borda);
+}
+
+.amostra-padrao {
+    background: var(--cor-fundo);
+}
+
+.amostra-folhagem {
+    background: radial-gradient(circle at 30% 30%, var(--cor-verde-agua), var(--cor-fundo) 70%);
+}
+
+.amostra-amanhecer {
+    background: linear-gradient(180deg, #ffe3b0, #ffd3c2, var(--cor-fundo));
+}
+
+.amostra-ninho {
+    background: repeating-linear-gradient(135deg, #d8b596 0 8px, #f6ede0 8px 16px);
+}
+
+@media (max-width: 480px) {
+    .grade-papeis {
+        grid-template-columns: 1fr 1fr;
+    }
+}

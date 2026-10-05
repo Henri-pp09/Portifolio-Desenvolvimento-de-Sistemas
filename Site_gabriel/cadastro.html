@@ -3,13 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <title>Criar Perfil | Aviario Sonoro</title>
     <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="ui.css">
 </head>
-<body>
+<body class="pagina-carregando">
+    <div class="tela-carregamento" role="status" aria-live="polite" aria-label="Carregando pagina">
+        <div class="carregamento-conteudo">
+            <i class="fa-solid fa-feather" aria-hidden="true"></i>
+            <strong>Aviario Sonoro</strong>
+            <span class="carregamento-anel" aria-hidden="true"></span>
+            <p>Preparando o ninho...</p>
+        </div>
+    </div>
     <main class="auth-pagina">
         <section class="chamada">
-            <a class="marca" href="hub.html">Sabia Sabiá</a>
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviario Sonoro</a>
             <p class="etiqueta">novo perfil</p>
             <h1>Crie sua identidade dentro do Aviario.</h1>
             <p>Monte seu perfil para aparecer no feed com nome, usuario e uma bio no clima do site.</p>
@@ -34,7 +47,7 @@
                     Escreva aqui sua Senha!
                     <input id="cadastroSenha" type="password" placeholder="Ex: 1234" required>
                 </label>
-                <button type="submit">Criar perfil</button>
+                <button type="submit"><i class="fa-solid fa-user-plus" aria-hidden="true"></i>Criar perfil</button>
                 <p class="mensagem" id="mensagemCadastro"></p>
             </form>
             <p class="rodape-form">Ja tem perfil? <a href="login.html">Entrar</a></p>
@@ -42,8 +55,14 @@
         </section>
     </main>
 
-    <div class="cursor"></div>
+    <div class="cursor" aria-hidden="true">
+        <span class="cursor-ring"></span>
+        <span class="cursor-dot"></span>
+        <i class="fa-solid fa-feather cursor-icon"></i>
+    </div>
     <script src="armazenamento.js"></script>
+    <script src="estado.js"></script>
+    <script src="aparencia.js"></script>
     <script src="cursor.js"></script>
     <script src="auth.js"></script>
 </body>

@@ -3,25 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <title>Perfil | Aviario Sonoro</title>
     <link rel="stylesheet" href="perfil.css">
+    <link rel="stylesheet" href="ui.css">
 </head>
-<body>
+<body class="fundo-personalizavel pagina-carregando">
+    <div class="tela-carregamento" role="status" aria-live="polite" aria-label="Carregando pagina">
+        <div class="carregamento-conteudo">
+            <i class="fa-solid fa-feather" aria-hidden="true"></i>
+            <strong>Aviario Sonoro</strong>
+            <span class="carregamento-anel" aria-hidden="true"></span>
+            <p>Preparando o ninho...</p>
+        </div>
+    </div>
     <header class="barra-site">
         <nav>
-            <a class="marca" href="hub.html">Aviario Sonoro</a>
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviario Sonoro</a>
             <div class="links-nav">
-                <a href="hub.html">Feed</a>
-                <a href="catalogo.html">Catalogo</a>
-                <a href="sobre.html">Sobre o projeto</a>
-                <a href="login.html">Login</a>
+                <a href="hub.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Feed</a>
+                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catalogo</a>
+                <a href="perfil.html" aria-current="page"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Perfil</a>
+                <a href="login.html"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
             </div>
         </nav>
     </header>
 
     <main class="pagina-perfil">
         <section class="capa-perfil" id="capaPerfil">
-            <div class="avatar-grande" id="avatarPerfil">AS</div>
+            <div class="avatar-grande" id="avatarPerfil"><i class="fa-solid fa-fish" aria-hidden="true"></i></div>
             <div class="info-perfil">
                 <p class="etiqueta">perfil de usuario</p>
                 <h1 id="nomePerfil">Visitante do Aviario</h1>
@@ -30,7 +43,7 @@
                     <span><strong id="contagemPosts">0</strong> posts</span>
                 </div>
             </div>
-            <button type="button" class="botao-link" id="botaoSair">Sair da conta</button>
+            <button type="button" class="botao-link" id="botaoSair"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>Sair da conta</button>
         </section>
 
         <section class="grade-perfil">
@@ -40,14 +53,18 @@
 
                 <h2>Imagens do perfil</h2>
                 <label class="rotulo-arquivo">
-                    Foto de perfil
+                    <span><i class="fa-solid fa-camera" aria-hidden="true"></i>Foto de perfil</span>
                     <input type="file" id="campoAvatar" accept="image/*">
                 </label>
                 <label class="rotulo-arquivo">
-                    Banner do perfil
+                    <span><i class="fa-solid fa-panorama" aria-hidden="true"></i>Banner do perfil</span>
                     <input type="file" id="campoBanner" accept="image/*">
                 </label>
                 <p class="mensagem" id="mensagemImagens"></p>
+
+                <h2>Aparência</h2>
+                <p>Escolha o papel de parede do seu Aviario. A escolha fica salva neste navegador.</p>
+                <div id="seletorPapel"></div>
 
                 <h2>Passaros favoritos</h2>
                 <div id="listaFavoritos" class="grade-favoritos"></div>
@@ -57,9 +74,15 @@
         </section>
     </main>
 
-    <div class="cursor"></div>
+    <div class="cursor" aria-hidden="true">
+        <span class="cursor-ring"></span>
+        <span class="cursor-dot"></span>
+        <i class="fa-solid fa-feather cursor-icon"></i>
+    </div>
     <script src="armazenamento.js"></script>
     <script src="especies.js"></script>
+    <script src="estado.js"></script>
+    <script src="aparencia.js"></script>
     <script src="cursor.js"></script>
     <script src="perfil.js"></script>
 </body>

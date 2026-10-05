@@ -4,47 +4,16 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #eef5f0;
-    color: #18332f;
+    background: var(--cor-fundo);
 }
 
-header {
-    padding: 24px 20px 70px;
-    color: #fff9ed;
+/* Faixa colorida abaixo do menu, so com o titulo/introducao do catalogo. */
+.hero-catalogo {
+    padding: 40px 20px 70px;
+    color: var(--cor-creme);
     background:
         linear-gradient(135deg, rgba(13, 54, 58, 0.96), rgba(25, 91, 79, 0.78)),
         url("foto de passaros/Bem_Te_Vi.jpg") center/cover;
-}
-
-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    max-width: 980px;
-    margin: 0 auto 54px;
-}
-
-.marca {
-    color: #ffcf5c;
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.links-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-}
-
-nav a,
-footer a {
-    color: #fff9ed;
-    text-decoration: none;
-    border-bottom: 2px solid #7be0c4;
-    padding-bottom: 4px;
 }
 
 .topo {
@@ -52,11 +21,8 @@ footer a {
     margin: 0 auto;
 }
 
-.etiqueta {
-    color: #7be0c4;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.topo .etiqueta {
+    margin: 0 0 10px;
 }
 
 h1 {
@@ -69,6 +35,7 @@ h1 {
 main {
     display: grid;
     gap: 22px;
+    width: 100%;
     max-width: 980px;
     margin: -38px auto 0;
     padding: 0 20px 36px;
@@ -77,13 +44,13 @@ main {
 section {
     padding: 22px;
     background: #ffffff;
-    border: 1px solid #cfe2d6;
-    border-radius: 8px;
-    box-shadow: 0 14px 32px rgba(24, 51, 47, 0.1);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-cartao);
 }
 
 .intro {
-    border-left: 8px solid #ffcf5c;
+    border-left: 8px solid var(--cor-amarelo);
 }
 
 .intro h2 {
@@ -92,18 +59,19 @@ section {
 
 .grade-catalogo {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr));
     gap: 22px;
+    width: 100%;
     max-width: 980px;
     margin: 0 auto;
-    padding: 0 20px 10px;
+    padding: 0 0 10px;
 }
 
 .mensagem {
     max-width: 980px;
     margin: 0 auto;
     padding: 0 20px;
-    color: #0d6b63;
+    color: var(--cor-verde-escuro);
     font-weight: bold;
     min-height: 20px;
 }
@@ -112,10 +80,6 @@ section {
     display: grid;
     gap: 14px;
     padding: 22px;
-    background: #ffffff;
-    border: 1px solid #cfe2d6;
-    border-radius: 8px;
-    box-shadow: 0 14px 32px rgba(24, 51, 47, 0.1);
     text-align: center;
 }
 
@@ -125,64 +89,20 @@ section {
     height: 210px;
     border-radius: 8px;
     object-fit: cover;
-    border: 5px solid #ffcf5c;
+    border: 5px solid var(--cor-amarelo);
 }
 
 .card-catalogo .sem-foto {
     display: grid;
     place-items: center;
-    background: #eef5f0;
+    background: var(--cor-fundo);
     color: #60706a;
     font-size: 14px;
 }
 
 .card-catalogo h3 {
     margin: 0;
-    color: #0d6b63;
-}
-
-* {
-  cursor: none !important;
-}
-
-.cursor {
-    width: 40px;
-    height: 40px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    background: url("Outras Fotos/Cursor_De_Passaro.png") no-repeat center;
-    transform: translate(-50%, -50%);
-    transition: transform 0.05s linear;
-    z-index: 20;
-}
-
-button {
-    padding: 11px 18px;
-    border: none;
-    background: #ff7a45;
-    color: #122c2f;
-    cursor: pointer;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: 0.25s;
-}
-
-button:hover {
-    background: #ffcf5c;
-    transform: translateY(-2px);
-}
-
-button:disabled {
-    background: #cad7d0;
-    color: #60706a;
-    cursor: not-allowed;
-}
-
-button:disabled:hover {
-    background: #cad7d0;
-    transform: none;
+    color: var(--cor-verde-escuro);
 }
 
 audio {
@@ -193,17 +113,19 @@ audio {
 footer {
     padding: 24px 20px;
     text-align: center;
-    background: #0d363a;
+    background: var(--cor-marca-escura);
+}
+
+footer a {
+    color: var(--cor-creme);
+    text-decoration: none;
+    font-weight: bold;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--cor-verde-agua);
 }
 
 @media (max-width: 700px) {
-    nav {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
     h1 {
         font-size: 34px;
     }
 }
-
