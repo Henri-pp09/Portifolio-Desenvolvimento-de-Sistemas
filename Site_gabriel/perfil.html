@@ -7,33 +7,35 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <title>Perfil | Aviario Sonoro</title>
+    <title>Perfil | Aviário Sonoro</title>
     <link rel="stylesheet" href="perfil.css">
     <link rel="stylesheet" href="ui.css">
 </head>
 <body class="fundo-personalizavel pagina-carregando">
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
     <div class="tela-carregamento" role="status" aria-live="polite" aria-label="Carregando pagina">
         <div class="carregamento-conteudo">
             <i class="fa-solid fa-feather" aria-hidden="true"></i>
-            <strong>Aviario Sonoro</strong>
+            <strong>Aviário Sonoro</strong>
             <span class="carregamento-anel" aria-hidden="true"></span>
             <p>Preparando o ninho...</p>
         </div>
     </div>
     <header class="barra-site">
         <nav aria-label="Navegação principal">
-            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviario Sonoro</a>
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviário Sonoro</a>
             <div class="links-nav">
                 <a href="hub.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Feed</a>
-                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catalogo</a>
+                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catálogo</a>
                 <a href="perfil.html" aria-current="page"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Perfil</a>
-                <a href="sobre.html"><i class="fa-solid fa-seedling" aria-hidden="true"></i>Sobre</a>
+                <a href="sobre.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Sobre o projeto</a>
                 <a href="login.html"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
+                <a href="cadastro.html"><i class="fa-solid fa-user-plus" aria-hidden="true"></i>Criar perfil</a>
             </div>
         </nav>
     </header>
 
-    <main class="pagina-perfil">
+    <main id="conteudo" tabindex="-1" class="pagina-perfil">
         <section class="capa-perfil" id="capaPerfil">
             <div class="avatar-grande" id="avatarPerfil"><i class="fa-solid fa-fish" aria-hidden="true"></i></div>
             <div class="info-perfil">
@@ -55,12 +57,13 @@
                 <h2>Imagens do perfil</h2>
                 <label class="rotulo-arquivo">
                     <span><i class="fa-solid fa-camera" aria-hidden="true"></i>Foto de perfil</span>
-                    <input type="file" id="campoAvatar" accept="image/*">
+                    <input type="file" id="campoAvatar" accept="image/*" aria-describedby="mensagemImagens ajudaImagensPerfil">
                 </label>
                 <label class="rotulo-arquivo">
                     <span><i class="fa-solid fa-panorama" aria-hidden="true"></i>Banner do perfil</span>
-                    <input type="file" id="campoBanner" accept="image/*">
+                    <input type="file" id="campoBanner" accept="image/*" aria-describedby="mensagemImagens ajudaImagensPerfil">
                 </label>
+                <p id="ajudaImagensPerfil">Escolha uma imagem de até 8 MB.</p>
                 <p class="mensagem" id="mensagemImagens"></p>
 
                 <h2>Aparência</h2>
@@ -68,6 +71,7 @@
                 <div id="seletorPapel"></div>
 
                 <h2>Passaros favoritos</h2>
+                <p class="mensagem" id="mensagemFavoritos"></p>
                 <div id="listaFavoritos" class="grade-favoritos"></div>
             </aside>
 

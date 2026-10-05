@@ -5,7 +5,15 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     const cursor = document.querySelector(".cursor");
-    if (!cursor || !window.matchMedia("(pointer: fine)").matches) return;
+    if (!cursor || !window.matchMedia("(pointer: fine)").matches ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // O cursor decorativo não acompanha a navegação por teclado.
+    document.addEventListener("keydown", (evento) => {
+        if (evento.key === "Tab") {
+            document.body.classList.remove("cursor-personalizado");
+            cursor.classList.remove("visivel");
+        }
+    });
 
     document.body.classList.add("cursor-personalizado");
 
@@ -14,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const icon = cursor.querySelector(".cursor-icon");
 
     const mover = (evento) => {
+        document.body.classList.add("cursor-personalizado");
         const x = evento.clientX;
         const y = evento.clientY;
 

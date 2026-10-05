@@ -50,7 +50,7 @@ if (!usuarioAtual) {
                     <div><strong>${escaparHTML(usuarioAtual.nome)}</strong></div>
                 </div>
                 <p>${escaparHTML(post.texto)}</p>
-                ${post.imagemUrl ? `<img src="${post.imagemUrl}" alt="Foto da postagem" loading="lazy">` : ""}
+                ${post.imagemUrl ? `<div class="midia-post"><img src="${escaparHTML(post.imagemUrl)}" alt="Imagem publicada por @${escaparHTML(post.autorUsuario)}" loading="lazy" decoding="async"></div>` : ""}
                 <div class="acoes-post">
                     <span>${post.curtidas.length} curtida(s)</span>
                 </div>
@@ -58,6 +58,8 @@ if (!usuarioAtual) {
             colunaPosts.appendChild(artigo);
         });
     }
+
+    informarFalhasDeImagem(colunaPosts);
 
     // ---------- Avatar e banner ----------
     const campoAvatar = document.getElementById("campoAvatar");
@@ -135,7 +137,15 @@ if (!usuarioAtual) {
             item.innerHTML = `${favoritado ? "★" : "☆"} <em>${escaparHTML(especie.nomeCientifico)}</em>`;
 
             item.addEventListener("click", () => {
-                const usuarioAtualizado = alternarFavorito(usuarioAtual.id, especie.id);
+                let usuarioAtualizado;
+                try {
+                    usuarioAtualizado = alternarFavorito(usuarioAtual.id, especie.id);
+                    definirMensagem(document.getElementById("mensagemFavoritos"), favoritado
+                        ? "Removido dos favoritos." : "Adicionado aos favoritos.", "sucesso");
+                } catch {
+                    definirMensagem(document.getElementById("mensagemFavoritos"), "Não foi possível salvar os favoritos.", "erro");
+                    return;
+                }
                 if (usuarioAtualizado) {
                     usuarioAtual.favoritos = usuarioAtualizado.favoritos;
                     renderizarFavoritos();

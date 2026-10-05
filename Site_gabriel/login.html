@@ -7,22 +7,37 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <title>Login | Aviario Sonoro</title>
+    <title>Login | Aviário Sonoro</title>
     <link rel="stylesheet" href="auth.css">
     <link rel="stylesheet" href="ui.css">
 </head>
 <body class="pagina-carregando">
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
     <div class="tela-carregamento" role="status" aria-live="polite" aria-label="Carregando pagina">
         <div class="carregamento-conteudo">
             <i class="fa-solid fa-feather" aria-hidden="true"></i>
-            <strong>Aviario Sonoro</strong>
+            <strong>Aviário Sonoro</strong>
             <span class="carregamento-anel" aria-hidden="true"></span>
             <p>Preparando o ninho...</p>
         </div>
     </div>
-    <main class="auth-pagina">
+    <header class="barra-site">
+        <nav aria-label="Navegação principal">
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviário Sonoro</a>
+            <div class="links-nav">
+                <a href="hub.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Feed</a>
+                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catálogo</a>
+                <a href="perfil.html"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Perfil</a>
+                <a href="sobre.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Sobre o projeto</a>
+                <a href="login.html" aria-current="page"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
+                <a href="cadastro.html"><i class="fa-solid fa-user-plus" aria-hidden="true"></i>Criar perfil</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="conteudo" tabindex="-1" class="auth-pagina">
         <section class="chamada">
-            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviario Sonoro</a>
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviário Sonoro</a>
             <p class="etiqueta">entre no ninho</p>
             <h1>Volte para o feed das aves mais barulhentas.</h1>
             <p>Entre com seu usuario para ver seu perfil e participar dessa rede social aviaria.</p>
@@ -30,14 +45,12 @@
 
         <section class="cartao-auth">
             <h2>Login</h2>
-            <form id="formLogin">
-                <label>
-                    Usuario
-                    <input id="loginUsuario" type="text" placeholder="ex: tucano_mestre" required>
+            <form id="formLogin" novalidate>
+                <label for="loginUsuario">Usuário (obrigatório)
+                    <input id="loginUsuario" autocomplete="username" aria-describedby="mensagemLogin" type="text" placeholder="ex: tucano_mestre" required>
                 </label>
-                <label>
-                    Senha
-                    <input id="loginSenha" type="password" placeholder="Sua senha" required>
+                <label for="loginSenha">Senha (obrigatório)
+                    <input id="loginSenha" autocomplete="current-password" aria-describedby="mensagemLogin" type="password" placeholder="Sua senha" required>
                 </label>
                 <button type="submit"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Entrar</button>
                 <p class="mensagem" id="mensagemLogin"></p>

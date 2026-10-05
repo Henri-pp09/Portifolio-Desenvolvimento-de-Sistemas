@@ -52,7 +52,7 @@ function renderizarFeed() {
                 </div>
             </div>
             <p>${escaparHTML(post.texto)}</p>
-            ${post.imagemUrl ? `<img src="${post.imagemUrl}" alt="Foto da postagem" loading="lazy">` : ""}
+            ${post.imagemUrl ? `<div class="midia-post"><img src="${escaparHTML(post.imagemUrl)}" alt="Imagem publicada por @${escaparHTML(post.autorUsuario)}" loading="lazy" decoding="async"></div>` : ""}
             <div class="acoes-post">
                 <button type="button" class="botao-curtir" data-id="${post.id}" aria-pressed="${jaCurtiu}" ${
             usuarioAtual ? "" : "disabled title='Crie um perfil para curtir'"
@@ -64,11 +64,15 @@ function renderizarFeed() {
         listaFeed.appendChild(artigo);
     });
 
+    informarFalhasDeImagem(listaFeed);
+
     listaFeed.querySelectorAll(".botao-curtir").forEach((botao) => {
         botao.addEventListener("click", () => {
             if (!usuarioAtual) return;
+            const curtiu = botao.getAttribute("aria-pressed") === "true";
             alternarLike(botao.dataset.id, usuarioAtual.id);
             renderizarFeed();
+            definirMensagem(mensagemPost, curtiu ? "Curtida removida." : "Curtida registrada.", "sucesso");
         });
     });
 }
@@ -105,7 +109,7 @@ if (campoFotoPost) {
 }
 
 if (formNovoPost) {
-    formNovoPost.addEventListener("submit", (evento) => {
+    formNovoPost.addEventListener("submit", async (evento) => {
         evento.preventDefault();
 
         if (!usuarioAtual) {
@@ -113,6 +117,8 @@ if (formNovoPost) {
             return;
         }
 
+        const botao = formNovoPost.querySelector("button[type=submit]");
+        if (botao.disabled || !validarFormulario(formNovoPost, mensagemPost)) return;
         const campoTexto = document.getElementById("textoPost");
         const texto = campoTexto.value.trim();
         if (!texto) return;
@@ -121,18 +127,26 @@ if (formNovoPost) {
             definirMensagem(mensagemPost, "Aguarde a preparação da imagem antes de publicar.", "carregando");
             return;
         }
+        definirBotaoCarregando(botao, true, "Publicando...");
+        formNovoPost.setAttribute("aria-busy", "true");
+        definirMensagem(mensagemPost, "Publicando...", "carregando");
         try {
+            // Permite ao navegador pintar o estado antes da gravação síncrona.
+            await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
             criarPost(usuarioAtual, texto, imagemPostSelecionada);
         } catch (erro) {
             definirMensagem(mensagemPost, "Não foi possível salvar. O armazenamento pode estar cheio; tente uma foto menor.", "erro");
             return;
+        } finally {
+            definirBotaoCarregando(botao, false);
+            formNovoPost.removeAttribute("aria-busy");
         }
 
         campoTexto.value = "";
         if (campoFotoPost) campoFotoPost.value = "";
         imagemPostSelecionada = null;
         previaImagemPost.hidden = true;
-        definirMensagem(mensagemPost, "Post publicado!", "sucesso");
+        definirMensagem(mensagemPost, "Publicação criada com sucesso.", "sucesso");
         renderizarFeed();
     });
 }

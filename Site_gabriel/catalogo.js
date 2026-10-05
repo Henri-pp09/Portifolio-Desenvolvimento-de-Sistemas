@@ -113,9 +113,10 @@ function criarBotaoFavorito(especie) {
             return;
         }
         try {
+            const estavaFavoritado = listarFavoritos(usuario.id).includes(especie.id);
             alternarFavorito(usuario.id, especie.id);
             atualizar();
-            definirMensagem(mensagemCatalogo, "Favoritos atualizados.", "sucesso");
+            definirMensagem(mensagemCatalogo, estavaFavoritado ? "Removido dos favoritos." : "Adicionado aos favoritos.", "sucesso");
         } catch (erro) {
             definirMensagem(mensagemCatalogo, "Não foi possível salvar o favorito neste navegador.", "erro");
         }
@@ -127,13 +128,14 @@ function atualizarBotaoAudio(botao, estado) {
     botao.classList.toggle("em-carregamento", estado === "carregando");
     botao.toggleAttribute("aria-busy", estado === "carregando");
     botao.setAttribute("aria-pressed", estado === "tocando" ? "true" : "false");
+    botao.disabled = estado === "carregando";
 
     if (estado === "carregando") {
-        botao.textContent = "Carregando audio...";
+        botao.textContent = "Carregando áudio...";
     } else if (estado === "tocando") {
         botao.innerHTML = `<i class="fa-solid fa-pause" aria-hidden="true"></i>Pausar`;
     } else {
-        botao.innerHTML = `<i class="fa-solid fa-play" aria-hidden="true"></i>Reproduzir`;
+        botao.innerHTML = `<i class="fa-solid fa-play" aria-hidden="true"></i>Reproduzir canto`;
     }
 }
 
@@ -164,7 +166,7 @@ function criarCard(especie, foto) {
     if (!especie.audioUrl || especie.audioDisponivel === false) {
         const indisponivel = document.createElement("p");
         indisponivel.className = "audio-indisponivel";
-        indisponivel.textContent = "Áudio indisponível";
+        indisponivel.textContent = "Áudio indisponível para esta espécie.";
         card.appendChild(indisponivel);
         return card;
     }
@@ -172,67 +174,88 @@ function criarCard(especie, foto) {
     const audio = document.createElement("audio");
     audio.src = especie.audioUrl;
     audio.preload = "none";
+    audio.setAttribute("aria-label", `Canto de ${especie.nomePopular || especie.nomeCientifico}`);
     card.appendChild(audio);
 
+    const mensagemAudio = document.createElement("p");
+    mensagemAudio.id = `audio-${especie.id}`;
+    mensagemAudio.className = "mensagem mensagem-audio";
+    mensagemAudio.setAttribute("role", "status");
+    mensagemAudio.setAttribute("aria-live", "polite");
     const botao = document.createElement("button");
     botao.type = "button";
+    botao.setAttribute("aria-describedby", mensagemAudio.id);
+    botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || especie.nomeCientifico}`);
     atualizarBotaoAudio(botao, "parado");
+    let tempoLimite;
+    let indisponivel = false;
+    function limparLimite() { clearTimeout(tempoLimite); }
+
+    function falhaAudio() {
+        indisponivel = true;
+        limparLimite();
+        if (audioTocandoAgora === audio) pararAudioAtual();
+        atualizarBotaoAudio(botao, "parado");
+        botao.disabled = true;
+        botao.textContent = "Áudio indisponível";
+        definirMensagem(mensagemAudio, "Não foi possível carregar este canto.", "erro");
+    }
 
     botao.addEventListener("click", async () => {
         if (audioTocandoAgora && audioTocandoAgora !== audio) pararAudioAtual();
-
-        if (audio.paused) {
-            audioTocandoAgora = audio;
-            botaoTocandoAgora = botao;
-            atualizarBotaoAudio(botao, "carregando");
-
-            try {
-                await audio.play();
-                if (audioTocandoAgora === audio) atualizarBotaoAudio(botao, "tocando");
-            } catch (erro) {
-                if (audioTocandoAgora === audio) {
-                    audioTocandoAgora = null;
-                    botaoTocandoAgora = null;
-                }
-                if (!botao.disabled) atualizarBotaoAudio(botao, "parado");
-                definirMensagem(
-                    mensagemCatalogo,
-                    "Nao foi possivel reproduzir este canto agora.",
-                    "erro"
-                );
-            }
-        } else {
-            audio.pause();
+        if (!audio.paused) {
+            pararAudioAtual();
+            return;
+        }
+        audioTocandoAgora = audio;
+        botaoTocandoAgora = botao;
+        atualizarBotaoAudio(botao, "carregando");
+        definirMensagem(mensagemAudio, "Carregando áudio...", "carregando");
+        tempoLimite = setTimeout(() => {
+            if (audioTocandoAgora === audio) falhaAudio();
+        }, 12000);
+        try {
+            await audio.play();
+            limparLimite();
+            // Uma promessa antiga não pode reiniciar a faixa depois da troca.
+            if (audioTocandoAgora !== audio) { audio.pause(); return; }
+            atualizarBotaoAudio(botao, "tocando");
+            botao.setAttribute("aria-label", `Pausar canto de ${especie.nomePopular || especie.nomeCientifico}`);
+            definirMensagem(mensagemAudio, "Reproduzindo canto.");
+        } catch (erro) {
+            limparLimite();
+            if (audioTocandoAgora !== audio || botao.disabled && audio.error) return;
+            if (audio.error) { falhaAudio(); return; }
+            pararAudioAtual();
+            definirMensagem(mensagemAudio, "Não foi possível iniciar a reprodução. Tente novamente.", "erro");
+        }
+    });
+    audio.addEventListener("error", falhaAudio);
+    audio.addEventListener("pause", () => {
+        limparLimite();
+        if (!audio.error && !indisponivel) {
             atualizarBotaoAudio(botao, "parado");
+            botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || especie.nomeCientifico}`);
+            definirMensagem(mensagemAudio, "Reprodução pausada.");
+        }
+    });
+    audio.addEventListener("waiting", () => {
+        if (audioTocandoAgora === audio) definirMensagem(mensagemAudio, "Carregando áudio...", "carregando");
+    });
+    audio.addEventListener("playing", () => {
+        if (audioTocandoAgora === audio) definirMensagem(mensagemAudio, "Reproduzindo canto.");
+    });
+    audio.addEventListener("ended", () => {
+        limparLimite();
+        atualizarBotaoAudio(botao, "parado");
+        botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || especie.nomeCientifico}`);
+        definirMensagem(mensagemAudio, "Canto concluído.");
+        if (audioTocandoAgora === audio) {
             audioTocandoAgora = null;
             botaoTocandoAgora = null;
         }
     });
-
-    audio.addEventListener("error", () => {
-        if (audioTocandoAgora === audio) pararAudioAtual();
-        audio.remove();
-        botao.classList.remove("em-carregamento");
-        botao.removeAttribute("aria-busy");
-        botao.disabled = true;
-        botao.textContent = "Áudio indisponível";
-    });
-
-    audio.addEventListener("waiting", () => {
-        if (audioTocandoAgora === audio) atualizarBotaoAudio(botao, "carregando");
-    });
-
-    audio.addEventListener("playing", () => {
-        if (audioTocandoAgora === audio) atualizarBotaoAudio(botao, "tocando");
-    });
-
-    audio.addEventListener("ended", () => {
-        atualizarBotaoAudio(botao, "parado");
-        audioTocandoAgora = null;
-        botaoTocandoAgora = null;
-    });
-
-    card.appendChild(botao);
+    card.append(botao, mensagemAudio);
     return card;
 }
 

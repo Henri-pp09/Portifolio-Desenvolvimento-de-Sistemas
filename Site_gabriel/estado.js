@@ -3,13 +3,17 @@
 // mensagens (sucesso, erro, carregando) com a aparencia certa.
 // Inclua este arquivo ANTES de auth.js, hub.js, perfil.js e catalogo.js.
 
-// tipo pode ser: "info" (padrao, sem cor extra), "sucesso", "erro" ou
+// tipo pode ser: "info", "sucesso", "erro", "aviso" ou
 // "carregando". O estilo de cada um esta em ui.css (classe .mensagem.*).
 function definirMensagem(elemento, texto, tipo = "info") {
     if (!elemento) return;
 
-    elemento.textContent = texto || "";
-    elemento.classList.remove("sucesso", "erro", "carregando", "mensagem-ativa");
+    const simbolo = { sucesso: "✓ ", erro: "⚠ ", aviso: "! " }[tipo] || "";
+    elemento.setAttribute("role", tipo === "erro" ? "alert" : "status");
+    elemento.setAttribute("aria-live", tipo === "erro" ? "assertive" : "polite");
+    elemento.setAttribute("aria-atomic", "true");
+    elemento.textContent = texto ? simbolo + texto : "";
+    elemento.classList.remove("sucesso", "erro", "aviso", "carregando", "mensagem-ativa");
 
     if (texto && tipo !== "info") {
         elemento.classList.add(tipo);
@@ -20,6 +24,33 @@ function definirMensagem(elemento, texto, tipo = "info") {
         void elemento.offsetWidth;
         elemento.classList.add("mensagem-ativa");
     }
+}
+
+// Aproveita as regras nativas dos campos, com mensagem no contexto e foco no erro.
+function validarFormulario(formulario, mensagem) {
+    const campos = [...formulario.querySelectorAll("input, textarea, select")];
+    campos.forEach((campo) => campo.removeAttribute("aria-invalid"));
+    const invalido = campos.find((campo) => !campo.disabled && (
+        !campo.validity.valid || (campo.required && !campo.value.trim())
+    ));
+    if (!invalido) return true;
+    const rotulo = invalido.labels?.[0]?.textContent.trim().replace(/\s+/g, " ") || "campo";
+    invalido.setAttribute("aria-invalid", "true");
+    definirMensagem(mensagem, `Confira ${rotulo}: ${invalido.validity.valueMissing || !invalido.value.trim()
+        ? "preencha este campo." : invalido.validationMessage}`, "erro");
+    invalido.focus();
+    return false;
+}
+
+function informarFalhasDeImagem(container) {
+    container.querySelectorAll(".midia-post img").forEach((imagem) => {
+        imagem.addEventListener("error", () => {
+            const aviso = document.createElement("p");
+            aviso.className = "foto-indisponivel";
+            aviso.textContent = "Imagem da publicação indisponível.";
+            imagem.replaceWith(aviso);
+        }, { once: true });
+    });
 }
 
 // Mantem o texto original do botao e expõe o estado de espera tambem para

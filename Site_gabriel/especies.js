@@ -1,14 +1,13 @@
 // Fonte única do catálogo e do seletor de favoritos do perfil.
 // Novas aves: nomes conferidos no WikiAves; fonteUrl aponta para cada ficha.
-// URLs antigas preservadas, mas os MP3 não estão nesta versão do repositório.
-// Ao restaurar cada arquivo, altere audioDisponivel para true.
+// Seis MP3 originais restaurados do histórico Git pela issue #12.
 // Novos áudios e fotos locais não disponíveis são null.
 const ESPECIES_CATALOGO = [
     {
         id: "tucano-toco",
         nomePopular: "Tucano-toco",
         nomeCientifico: "Ramphastos toco",
-        audioDisponivel: false,
+        audioDisponivel: true,
         audioUrl: "Audio de passaros/Canto_Tucano_Toco.mp3",
         fotoLocal: "foto de passaros/tucano_toco.jpg",
     },
@@ -16,7 +15,7 @@ const ESPECIES_CATALOGO = [
         id: "bem-te-vi",
         nomePopular: "Bem-te-vi",
         nomeCientifico: "Pitangus sulphuratus",
-        audioDisponivel: false,
+        audioDisponivel: true,
         audioUrl: "Audio de passaros/Canto_BemTevi.mp3",
         fotoLocal: "foto de passaros/Bem_Te_Vi.jpg",
     },
@@ -24,7 +23,7 @@ const ESPECIES_CATALOGO = [
         id: "calopsita",
         nomePopular: "Calopsita",
         nomeCientifico: "Nymphicus hollandicus",
-        audioDisponivel: false,
+        audioDisponivel: true,
         audioUrl: "Audio de passaros/Calopsitas Cantando.mp3",
         fotoLocal: "foto de passaros/prikito.jpg",
     },
@@ -32,7 +31,7 @@ const ESPECIES_CATALOGO = [
         id: "cacatua",
         nomePopular: "Cacatua",
         nomeCientifico: "Cacatua galerita",
-        audioDisponivel: false,
+        audioDisponivel: true,
         audioUrl: "Audio de passaros/Canto_Cacatua.mp3",
         fotoLocal: "foto de passaros/cacatua.jpg",
     },
@@ -40,7 +39,7 @@ const ESPECIES_CATALOGO = [
         id: "papagaio",
         nomePopular: "Papagaio",
         nomeCientifico: "Amazona aestiva",
-        audioDisponivel: false,
+        audioDisponivel: true,
         audioUrl: "Audio de passaros/Canto_Papagaio.mp3",
         fotoLocal: "foto de passaros/bicos-de-passaros.jpg",
     },
@@ -48,7 +47,7 @@ const ESPECIES_CATALOGO = [
         id: "maritaca",
         nomePopular: "Maritaca",
         nomeCientifico: "Pionus maximiliani",
-        audioDisponivel: false,
+        audioDisponivel: true,
         audioUrl: "Audio de passaros/Canto_Maritaca.mp3",
         fotoLocal: "foto de passaros/maritaca.jpg",
     },

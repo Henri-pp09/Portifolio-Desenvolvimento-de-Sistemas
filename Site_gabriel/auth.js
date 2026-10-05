@@ -12,6 +12,7 @@ if (formCadastro) {
 
         const mensagem = document.getElementById("mensagemCadastro");
         const botao = formCadastro.querySelector("button[type='submit']");
+        if (botao.disabled || !validarFormulario(formCadastro, mensagem)) return;
 
         const dados = {
             nome: document.getElementById("cadastroNome").value.trim(),
@@ -48,6 +49,7 @@ if (formLogin) {
 
         const mensagem = document.getElementById("mensagemLogin");
         const botao = formLogin.querySelector("button[type='submit']");
+        if (botao.disabled || !validarFormulario(formLogin, mensagem)) return;
         const usuario = document.getElementById("loginUsuario").value.trim();
         const senha = document.getElementById("loginSenha").value;
 

@@ -7,22 +7,37 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <title>Criar Perfil | Aviario Sonoro</title>
+    <title>Criar Perfil | Aviário Sonoro</title>
     <link rel="stylesheet" href="auth.css">
     <link rel="stylesheet" href="ui.css">
 </head>
 <body class="pagina-carregando">
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
     <div class="tela-carregamento" role="status" aria-live="polite" aria-label="Carregando pagina">
         <div class="carregamento-conteudo">
             <i class="fa-solid fa-feather" aria-hidden="true"></i>
-            <strong>Aviario Sonoro</strong>
+            <strong>Aviário Sonoro</strong>
             <span class="carregamento-anel" aria-hidden="true"></span>
             <p>Preparando o ninho...</p>
         </div>
     </div>
-    <main class="auth-pagina">
+    <header class="barra-site">
+        <nav aria-label="Navegação principal">
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviário Sonoro</a>
+            <div class="links-nav">
+                <a href="hub.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Feed</a>
+                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catálogo</a>
+                <a href="perfil.html"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Perfil</a>
+                <a href="sobre.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Sobre o projeto</a>
+                <a href="login.html"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
+                <a href="cadastro.html" aria-current="page"><i class="fa-solid fa-user-plus" aria-hidden="true"></i>Criar perfil</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="conteudo" tabindex="-1" class="auth-pagina">
         <section class="chamada">
-            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviario Sonoro</a>
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviário Sonoro</a>
             <p class="etiqueta">novo perfil</p>
             <h1>Crie sua identidade dentro do Aviario.</h1>
             <p>Monte seu perfil para aparecer no feed com nome, usuario e uma bio no clima do site.</p>
@@ -30,22 +45,19 @@
 
         <section class="cartao-auth">
             <h2>Criar perfil</h2>
-            <form id="formCadastro">
-                <label>
-                    Escreva aqui seu Nome Completo! 
-                    <input id="cadastroNome" type="text" placeholder="Ex: Gabriel Passarologo" required>
+            <form id="formCadastro" novalidate>
+                <label for="cadastroNome">Nome completo (obrigatório)
+                    <input id="cadastroNome" autocomplete="name" aria-describedby="mensagemCadastro" type="text" placeholder="Ex: Gabriel Passarologo" required>
+                </label>
+                <label for="cadastroUsuario">Nome de usuário (obrigatório)
+                    <input id="cadastroUsuario" autocomplete="username" aria-describedby="mensagemCadastro" type="text" placeholder="Ex: gabriel_aviario" required>
                 </label>
                 <label>
-                    Escreva aqui seu nome de Usuario!
-                    <input id="cadastroUsuario" type="text" placeholder="Ex: gabriel_aviario" required>
-                </label>
-                <label>
-                    Escreva aqui sua Bio!
+                    Bio (opcional)
                     <textarea id="cadastroBio" placeholder="Qual ave representa melhor você?"></textarea>
                 </label>
-                <label>
-                    Escreva aqui sua Senha!
-                    <input id="cadastroSenha" type="password" placeholder="Ex: 1234" required>
+                <label for="cadastroSenha">Senha (obrigatório)
+                    <input id="cadastroSenha" autocomplete="new-password" aria-describedby="mensagemCadastro" type="password" placeholder="Escolha uma senha" required>
                 </label>
                 <button type="submit"><i class="fa-solid fa-user-plus" aria-hidden="true"></i>Criar perfil</button>
                 <p class="mensagem" id="mensagemCadastro"></p>

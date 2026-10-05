@@ -72,7 +72,7 @@ function validarArquivoDeImagem(arquivo, tamanhoMaximoEmMB = 8) {
     }
 }
 
-function redimensionarImagem(arquivo, larguraMaxima = 800, qualidade = 0.75) {
+function redimensionarImagem(arquivo, dimensaoMaxima = 800, qualidade = 0.75) {
     return new Promise((resolve, reject) => {
         const leitor = new FileReader();
 
@@ -82,12 +82,13 @@ function redimensionarImagem(arquivo, larguraMaxima = 800, qualidade = 0.75) {
 
             imagem.onerror = () => reject(new Error("Arquivo nao parece ser uma imagem valida."));
             imagem.onload = () => {
-                const escala = Math.min(1, larguraMaxima / imagem.width);
+                const escala = Math.min(1, dimensaoMaxima / Math.max(imagem.width, imagem.height));
                 const canvas = document.createElement("canvas");
                 canvas.width = Math.round(imagem.width * escala);
                 canvas.height = Math.round(imagem.height * escala);
 
                 const contexto = canvas.getContext("2d");
+                if (!contexto) { reject(new Error("Não foi possível processar a imagem.")); return; }
                 contexto.drawImage(imagem, 0, 0, canvas.width, canvas.height);
 
                 resolve(canvas.toDataURL("image/jpeg", qualidade));

@@ -828,3 +828,53 @@ input:user-invalid, textarea:user-invalid { border-color: var(--cor-erro); }
     .barra-site nav { flex-wrap: wrap; }
     .links-nav { max-width: 100%; }
 }
+
+/* Acessibilidade: dois contornos funcionam sobre fundos claros e escuros. */
+:focus-visible, .pagina-institucional a:focus-visible,
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 3px solid #0d363a;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px #fff9ed;
+}
+.rotulo-arquivo:focus-within span {
+    outline: 3px solid #0d363a;
+    box-shadow: 0 0 0 3px #fff9ed;
+    outline-offset: 3px;
+}
+.pular-conteudo { position: fixed; left: 12px; top: 12px; z-index: 100000; padding: 12px 18px; background: #fff9ed; color: #0d363a; font-weight: 700; transform: translateY(-180%); }
+.pular-conteudo:focus { transform: none; }
+::placeholder { color: #52655e; opacity: 1; }
+.mensagem { line-height: 1.5; }
+.mensagem.sucesso::before, .mensagem.erro::before { content: none; }
+.mensagem.aviso { color: #735000; font-weight: 700; }
+.composer .mensagem { padding: 8px 12px; background: var(--cor-creme); border-radius: var(--raio); color: var(--cor-texto); }
+.composer .mensagem:empty { display: none; }
+.composer .mensagem.erro { color: #a02d20; }
+.composer .mensagem.sucesso, .composer .mensagem.carregando { color: #0d6b63; }
+.composer .mensagem.aviso { color: #735000; }
+.composer { background-color: #0d363a; background-image: linear-gradient(135deg, rgba(13, 54, 58, .98), rgba(13, 54, 58, .90)), url("foto de passaros/tucano_toco.jpg"); }
+.sobre-conteudo { background-image: linear-gradient(135deg, rgba(13, 54, 58, .98), rgba(13, 54, 58, .88)), url("Outras Fotos/Frutiger aero wallpaper.jpg"); }
+.capa-perfil { background-color: #0d363a; }
+.ajuda-campo { margin: 0; font-size: .9rem; line-height: 1.5; }
+.auth-pagina { min-height: calc(100vh - 100px); }
+.auth-pagina .marca { font-size: 22px; }
+.barra-site .marca { font-size: 18px; }
+.links-nav { gap: 4px; }
+.links-nav a { padding-inline: 8px; }
+
+/* A mesma mídia é utilizada em posts novos e antigos do feed e do perfil. */
+#listaFeed { display: grid; gap: 18px; min-width: 0; }
+.feed, .coluna-posts, .post { min-width: 0; }
+.post { width: 100%; padding: 20px; }
+.post p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.topo-post > div { min-width: 0; overflow-wrap: anywhere; }
+.midia-post { display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; border: 2px solid var(--cor-borda); border-radius: var(--raio); background: var(--cor-fundo); }
+.post .midia-post img { display: block; width: 100%; height: 100%; max-height: none; object-fit: contain; border: 0; border-radius: 0; }
+.previa-imagem { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; max-height: none; object-fit: contain; background: var(--cor-fundo); }
+.previa-imagem[hidden] { display: none; }
+.foto-indisponivel { padding: 12px; text-align: center; }
+.acoes-post { padding-top: 12px; border-top: 1px solid var(--cor-borda); }
+@media (max-width: 640px) {
+    .barra-site { padding: 12px; }
+    .links-nav a { font-size: .9rem; padding: 8px; }
+}

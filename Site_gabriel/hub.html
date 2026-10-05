@@ -7,29 +7,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <title>Aviario Sonoro</title>
+    <title>Aviário Sonoro</title>
     <link rel="stylesheet" href="hub.css">
     <link rel="stylesheet" href="sobre.css">
     <link rel="stylesheet" href="ui.css">
 </head>
 <body class="fundo-personalizavel pagina-carregando">
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
     <div class="tela-carregamento" role="status" aria-live="polite" aria-label="Carregando pagina">
         <div class="carregamento-conteudo">
             <i class="fa-solid fa-feather" aria-hidden="true"></i>
-            <strong>Aviario Sonoro</strong>
+            <strong>Aviário Sonoro</strong>
             <span class="carregamento-anel" aria-hidden="true"></span>
             <p>Preparando o ninho...</p>
         </div>
     </div>
     <header class="barra-site">
         <nav aria-label="Navegação principal">
-            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviario Sonoro</a>
+            <a class="marca" href="hub.html"><i class="fa-solid fa-feather" aria-hidden="true"></i>Aviário Sonoro</a>
             <div class="links-nav">
                 <a href="hub.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i>Feed</a>
-                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catalogo</a>
+                <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catálogo</a>
                 <a href="perfil.html"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Perfil</a>
-                <a href="sobre.html"><i class="fa-solid fa-seedling" aria-hidden="true"></i>Sobre</a>
+                <a href="sobre.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Sobre o projeto</a>
                 <a href="login.html"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
+                <a href="cadastro.html"><i class="fa-solid fa-user-plus" aria-hidden="true"></i>Criar perfil</a>
             </div>
         </nav>
     </header>
@@ -37,13 +39,13 @@
     <section class="sobre-projeto">
         <div class="sobre-conteudo">
             <p class="etiqueta">conheça sobre</p>
-            <h2>O que é o Aviario Sonoro?</h2>
-            <p>O Aviario Sonoro é uma rede social feita para quem ama passaros. Aqui voce pode compartilhar fotos, cantos e curiosidades sobre as aves, alem de explorar um catalogo com informacoes sobre diferentes especies.</p>
+            <h2>O que é o Aviário Sonoro?</h2>
+            <p>O Aviário Sonoro é uma rede social feita para quem ama passaros. Aqui voce pode compartilhar fotos, cantos e curiosidades sobre as aves, alem de explorar um catalogo com informacoes sobre diferentes especies.</p>
             <p>O objetivo do projeto e criar um espaco simples e divertido para conectar pessoas apaixonadas por passaros, incentivando a troca de conhecimento e a observacao da natureza.</p>
         </div>
     </section>
 
-    <main class="layout-social">
+    <main id="conteudo" tabindex="-1" class="layout-social">
         <aside class="painel lateral">
             <div class="mini-perfil">
                 <div class="avatar" id="avatarHub">AS</div>
@@ -68,13 +70,15 @@
                 <p class="etiqueta">feed aviario</p>
                 <h1>O que esta cantando hoje?</h1>
                 <p id="frase-do-dia"></p>
-                <form id="formNovoPost" class="campo-post">
-                    <textarea id="textoPost" placeholder="Compartilhe um canto, uma foto ou uma fofoca de passaros..." required></textarea>
+                <form id="formNovoPost" class="campo-post" novalidate>
+                    <label for="textoPost">Publicação (obrigatório)</label>
+                    <textarea aria-describedby="mensagemPost" id="textoPost" placeholder="Compartilhe um canto, uma foto ou uma fofoca de passaros..." required></textarea>
                     <label class="rotulo-arquivo">
                         <span><i class="fa-solid fa-images" aria-hidden="true"></i>Adicionar foto (opcional)</span>
-                        <input type="file" id="imagemPost" accept="image/*">
+                        <input type="file" id="imagemPost" accept="image/*" aria-describedby="ajudaImagemPost mensagemPost">
                     </label>
-                    <img id="previaImagemPost" class="previa-imagem" hidden>
+                    <p class="ajuda-campo" id="ajudaImagemPost">Imagem opcional, até 8 MB. A proporção da foto será preservada.</p>
+                    <img id="previaImagemPost" class="previa-imagem" alt="Prévia da imagem da publicação" hidden>
                     <button type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i>Publicar</button>
                 </form>
                 <p class="mensagem" id="mensagemPost"></p>
