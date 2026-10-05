@@ -13,6 +13,14 @@ const CHAVE_POSTS = "aviario_posts";
 
 // ---------- Utilidades ----------
 
+function lerDadosLocais(chave, padrao) {
+    try {
+        return JSON.parse(localStorage.getItem(chave)) ?? padrao;
+    } catch {
+        return padrao;
+    }
+}
+
 function gerarId() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
@@ -92,42 +100,11 @@ function redimensionarImagem(arquivo, larguraMaxima = 800, qualidade = 0.75) {
     });
 }
 
-// Le um arquivo de imagem escolhido pelo usuario, redimensiona (para nao
-// estourar o limite do localStorage) e devolve como base64 (data URL),
-// que e o formato que da para guardar direto como texto no localStorage.
-function redimensionarImagem(arquivo, larguraMaxima = 800, qualidade = 0.8) {
-    return new Promise((resolve, reject) => {
-        if (!arquivo.type.startsWith("image/")) {
-            reject(new Error("O arquivo escolhido nao e uma imagem."));
-            return;
-        }
-
-        const leitor = new FileReader();
-        leitor.onerror = () => reject(new Error("Nao foi possivel ler o arquivo."));
-        leitor.onload = () => {
-            const imagem = new Image();
-            imagem.onerror = () => reject(new Error("Nao foi possivel abrir a imagem."));
-            imagem.onload = () => {
-                const escala = Math.min(1, larguraMaxima / imagem.width);
-                const canvas = document.createElement("canvas");
-                canvas.width = imagem.width * escala;
-                canvas.height = imagem.height * escala;
-
-                const contexto = canvas.getContext("2d");
-                contexto.drawImage(imagem, 0, 0, canvas.width, canvas.height);
-
-                resolve(canvas.toDataURL("image/jpeg", qualidade));
-            };
-            imagem.src = leitor.result;
-        };
-        leitor.readAsDataURL(arquivo);
-    });
-}
-
 // ---------- Usuarios ----------
 
 function listarUsuarios() {
-    return JSON.parse(localStorage.getItem(CHAVE_USUARIOS) || "[]");
+    const usuarios = lerDadosLocais(CHAVE_USUARIOS, []);
+    return Array.isArray(usuarios) ? usuarios : [];
 }
 
 function salvarUsuarios(usuarios) {
@@ -187,23 +164,12 @@ function alternarFavorito(usuarioId, especieId) {
     const usuario = buscarUsuarioPorId(usuarioId);
     if (!usuario) return null;
 
-    const favoritosAtuais = usuario.favoritos || [];
+    const favoritosAtuais = listarFavoritos(usuarioId);
     const novosFavoritos = favoritosAtuais.includes(especieId)
         ? favoritosAtuais.filter((id) => id !== especieId)
         : [...favoritosAtuais, especieId];
 
     return atualizarUsuario(usuarioId, { favoritos: novosFavoritos });
-}
-
-// Atualiza campos do usuario (ex: fotoPerfil, banner, bio) sem mexer no resto.
-function atualizarUsuario(usuarioId, camposParciais) {
-    const usuarios = listarUsuarios();
-    const indice = usuarios.findIndex((u) => u.id === usuarioId);
-    if (indice === -1) return null;
-
-    usuarios[indice] = { ...usuarios[indice], ...camposParciais };
-    salvarUsuarios(usuarios);
-    return usuarios[indice];
 }
 
 // ---------- Sessao (quem esta logado neste navegador agora) ----------
@@ -217,7 +183,7 @@ function encerrarSessao() {
 }
 
 function usuarioLogado() {
-    const sessao = JSON.parse(localStorage.getItem(CHAVE_SESSAO) || "null");
+    const sessao = lerDadosLocais(CHAVE_SESSAO, null);
     if (!sessao) return null;
     return buscarUsuarioPorId(sessao.usuarioId);
 }
@@ -225,7 +191,8 @@ function usuarioLogado() {
 // ---------- Posts ----------
 
 function listarPosts() {
-    const posts = JSON.parse(localStorage.getItem(CHAVE_POSTS) || "[]");
+    const dados = lerDadosLocais(CHAVE_POSTS, []);
+    const posts = Array.isArray(dados) ? dados : [];
     return posts.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
 }
 
@@ -269,30 +236,14 @@ function postsDoUsuario(usuarioId) {
     return listarPosts().filter((p) => p.autorId === usuarioId);
 }
 
-// ---------- Passaros favoritos (associados ao perfil do usuario) ----------
-// Guardamos so o essencial de cada especie (nome cientifico + foto), que e
-// exatamente o que o catalogo ja mostra em cada card.
-
+// Compatibilidade com favoritos salvos nas duas versões anteriores.
 function listarFavoritos(usuarioId) {
     const usuario = buscarUsuarioPorId(usuarioId);
-    return (usuario && usuario.favoritos) || [];
-}
-
-function estaNosFavoritos(usuarioId, nomeCientifico) {
-    return listarFavoritos(usuarioId).some((f) => f.nomeCientifico === nomeCientifico);
-}
-
-// Adiciona/remove uma especie dos favoritos do usuario. Retorna a lista atualizada.
-function alternarFavorito(usuarioId, especie) {
-    const favoritosAtuais = listarFavoritos(usuarioId);
-    const jaEstaFavoritado = favoritosAtuais.some(
-        (f) => f.nomeCientifico === especie.nomeCientifico
-    );
-
-    const novosFavoritos = jaEstaFavoritado
-        ? favoritosAtuais.filter((f) => f.nomeCientifico !== especie.nomeCientifico)
-        : [...favoritosAtuais, especie];
-
-    atualizarUsuario(usuarioId, { favoritos: novosFavoritos });
-    return novosFavoritos;
+    const favoritos = Array.isArray(usuario?.favoritos) ? usuario.favoritos : [];
+    return [...new Set(favoritos.map((favorito) => {
+        if (typeof favorito === "string") return favorito;
+        return favorito?.id || (typeof ESPECIES_CATALOGO !== "undefined"
+            ? ESPECIES_CATALOGO.find((ave) => ave.nomeCientifico === favorito?.nomeCientifico)?.id
+            : null);
+    }).filter(Boolean))];
 }

@@ -15,7 +15,12 @@ const PAPEIS_DE_PAREDE = [
 ];
 
 function papelDeParedeAtual() {
-    return localStorage.getItem(CHAVE_PAPEL_PAREDE) || "padrao";
+    try {
+        const salvo = localStorage.getItem(CHAVE_PAPEL_PAREDE);
+        return PAPEIS_DE_PAREDE.some((papel) => papel.id === salvo) ? salvo : "padrao";
+    } catch {
+        return "padrao";
+    }
 }
 
 function aplicarPapelDeParede(id) {
@@ -23,7 +28,11 @@ function aplicarPapelDeParede(id) {
 }
 
 function definirPapelDeParede(id) {
-    localStorage.setItem(CHAVE_PAPEL_PAREDE, id);
+    try {
+        localStorage.setItem(CHAVE_PAPEL_PAREDE, id);
+    } catch {
+        // A escolha continua funcionando nesta página sem armazenamento.
+    }
     aplicarPapelDeParede(id);
 }
 

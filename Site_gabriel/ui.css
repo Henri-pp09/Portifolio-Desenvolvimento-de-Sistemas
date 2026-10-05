@@ -812,3 +812,19 @@ body.fundo-personalizavel[data-papel="ninho"] {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* Navegação e controles compartilham a mesma escala em todas as páginas. */
+.links-nav { gap: 8px; }
+.links-nav a { display: inline-flex; align-items: center; gap: 7px; padding: 10px 12px; min-height: 44px; border-radius: 8px 8px 0 0; }
+.links-nav a:hover { background: rgba(255, 249, 237, 0.08); }
+.marca { gap: 10px; }
+button, .botao-link, .botao-menor { line-height: 1.35; }
+input:not([type="file"]), textarea, select { font: inherit; border-radius: var(--raio); }
+input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid var(--cor-verde-escuro); outline-offset: 3px; }
+input:user-invalid, textarea:user-invalid { border-color: var(--cor-erro); }
+.pagina-institucional .barra-site { position: sticky; }
+.pagina-institucional .sobre-abertura, .pagina-institucional .sobre-convite { animation: surgir 0.6s ease backwards; }
+@media (max-width: 900px) {
+    .barra-site nav { flex-wrap: wrap; }
+    .links-nav { max-width: 100%; }
+}
