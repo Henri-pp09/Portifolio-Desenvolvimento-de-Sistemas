@@ -143,3 +143,41 @@ footer a {
 /* O texto de status e a grade não podem aumentar a coluna no celular. */
 main { grid-template-columns: minmax(0, 1fr); }
 main > * { min-width: 0; max-width: 100%; }
+
+.filtros-catalogo { display: grid; grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)); gap: 16px; padding: 20px; background: white; border: 1px solid var(--cor-borda); border-radius: var(--raio); }
+.filtros-catalogo > div { display: grid; gap: 8px; min-width: 0; }
+.filtros-catalogo input, .filtros-catalogo select { width: 100%; min-width: 0; min-height: 44px; padding: 10px; border: 1px solid var(--cor-borda); border-radius: var(--raio); background: var(--cor-creme); color: var(--cor-texto); font: inherit; }
+.filtros-catalogo button { grid-column: 1 / -1; justify-self: start; }
+.nota-conservacao { font-size: .9rem; line-height: 1.6; }
+#resultadoBusca { margin: 0; }
+.card-catalogo { align-content: start; grid-template-rows: auto auto auto auto auto auto; }
+.card-catalogo[hidden], #catalogoVazio[hidden], #mostrarMaisAves[hidden] { display: none; }
+.selo-conservacao { margin: 0; padding: 8px; border-radius: var(--raio); background: #e9f2ed; color: #0d363a; font-weight: 700; font-size: .9rem; }
+.status-nt { background: #fff3cf; color: #654600; }
+.status-vu, .status-en, .status-cr { background: #ffe2d8; color: #84291d; }
+.status-ex, .status-ew { background: #e6e5eb; color: #332c45; }
+.card-catalogo h3 { min-height: 2.5em; display: grid; place-items: center; }
+.card-catalogo .area-foto img, .card-catalogo .sem-foto { height: auto; aspect-ratio: 4 / 3; }
+.area-foto { min-height: 0; }
+.credito-foto { min-height: 2.8em; }
+.estado-vazio { padding: 24px; background: white; border: 1px solid var(--cor-borda); border-radius: var(--raio); }
+#fichaEspecie { width: min(920px, calc(100% - 24px)); max-height: calc(100dvh - 24px); padding: 24px; color: var(--cor-texto); background: var(--cor-creme); border: 2px solid var(--cor-verde-escuro); border-radius: var(--raio); overflow: auto; }
+#fichaEspecie::backdrop { background: rgba(13, 54, 58, .8); }
+body:has(#fichaEspecie[open]) { overflow: hidden; }
+.topo-ficha { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.topo-ficha h2 { margin: 0; overflow-wrap: anywhere; }
+.topo-ficha button { flex-shrink: 0; }
+.conteudo-ficha { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 24px; margin-top: 20px; }
+.conteudo-ficha > * { min-width: 0; }
+.midia-ficha .botao-ficha, .midia-ficha h3, .midia-ficha .nome-cientifico, .midia-ficha .selo-conservacao { display: none; }
+.midia-ficha .card-catalogo { box-shadow: none; }
+#dadosFicha dl { margin: 0; }
+#dadosFicha dt { font-weight: 700; margin: 0 0 6px; }
+#dadosFicha dd { margin: 0 0 20px; line-height: 1.6; overflow-wrap: anywhere; }
+#dadosFicha a { overflow-wrap: anywhere; }
+#dadosFicha li { margin-block: 8px; }
+@media (max-width: 700px) {
+    .filtros-catalogo, .conteudo-ficha { grid-template-columns: minmax(0, 1fr); }
+    #fichaEspecie { padding: 16px; }
+    .topo-ficha { flex-wrap: wrap; }
+}

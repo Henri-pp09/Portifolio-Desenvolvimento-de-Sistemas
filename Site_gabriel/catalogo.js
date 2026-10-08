@@ -9,6 +9,17 @@
 
 const listaCatalogo = document.getElementById("listaCatalogo");
 const mensagemCatalogo = document.getElementById("mensagemCatalogo");
+const buscaEspecies = document.getElementById("buscaEspecies");
+const filtroSituacao = document.getElementById("filtroSituacao");
+const filtroConservacao = document.getElementById("filtroConservacao");
+const resultadoBusca = document.getElementById("resultadoBusca");
+const mostrarMaisAves = document.getElementById("mostrarMaisAves");
+const fichaEspecie = document.getElementById("fichaEspecie");
+const fotosCatalogo = new Map();
+const cardsCatalogo = new Map();
+const AVES_POR_LOTE = 24;
+let limiteExibicao = AVES_POR_LOTE;
+let fichaAberta = null;
 
 let audioTocandoAgora = null;
 let botaoTocandoAgora = null;
@@ -22,10 +33,10 @@ function escaparTextoCatalogo(texto) {
 const TEMPO_LIMITE_FOTO = 8000;
 const REQUISICOES_PARALELAS = 4;
 
-async function buscarFotoINaturalist(nomeCientifico) {
+async function buscarFotoINaturalist(nomeCientifico, termoBusca = nomeCientifico) {
     const controle = new AbortController();
     const limite = setTimeout(() => controle.abort(), TEMPO_LIMITE_FOTO);
-    const url = `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(nomeCientifico)}&rank=species&per_page=5`;
+    const url = `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(termoBusca)}&rank=species&per_page=5`;
 
     try {
         const resposta = await fetch(url, { signal: controle.signal });
@@ -109,16 +120,16 @@ function criarBotaoFavorito(especie) {
     botao.addEventListener("click", () => {
         const usuario = usuarioLogado();
         if (!usuario) {
-            definirMensagem(mensagemCatalogo, "Entre na sua conta para salvar favoritos.", "erro");
+            definirMensagem(fichaEspecie.open ? document.getElementById("mensagemFicha") : mensagemCatalogo, "Entre na sua conta para salvar favoritos.", "erro");
             return;
         }
         try {
             const estavaFavoritado = listarFavoritos(usuario.id).includes(especie.id);
             alternarFavorito(usuario.id, especie.id);
             atualizar();
-            definirMensagem(mensagemCatalogo, estavaFavoritado ? "Removido dos favoritos." : "Adicionado aos favoritos.", "sucesso");
+            definirMensagem(fichaEspecie.open ? document.getElementById("mensagemFicha") : mensagemCatalogo, estavaFavoritado ? "Removido dos favoritos." : "Adicionado aos favoritos.", "sucesso");
         } catch (erro) {
-            definirMensagem(mensagemCatalogo, "Não foi possível salvar o favorito neste navegador.", "erro");
+            definirMensagem(fichaEspecie.open ? document.getElementById("mensagemFicha") : mensagemCatalogo, "Não foi possível salvar o favorito neste navegador.", "erro");
         }
     });
     return botao;
@@ -162,6 +173,18 @@ function criarCard(especie, foto) {
     cientifico.className = "nome-cientifico";
     cientifico.innerHTML = `<em>${escaparTextoCatalogo(especie.nomeCientifico)}</em>`;
     card.appendChild(cientifico);
+    const selo = document.createElement("p");
+    selo.className = `selo-conservacao status-${especie.statusConservacao.toLowerCase()}`;
+    selo.textContent = `${especie.statusConservacao} — ${especie.statusConservacaoNome}`;
+    card.appendChild(selo);
+    const detalhes = document.createElement("button");
+    detalhes.type = "button";
+    detalhes.className = "botao-ficha";
+    detalhes.textContent = "Ver ficha";
+    detalhes.setAttribute("aria-label", `Ver ficha de ${especie.nomePopular}`);
+    detalhes.setAttribute("aria-haspopup", "dialog");
+    detalhes.addEventListener("click", () => abrirFicha(especie, card, detalhes));
+    card.appendChild(detalhes);
     card.appendChild(criarBotaoFavorito(especie));
     if (!especie.audioUrl || especie.audioDisponivel === false) {
         const indisponivel = document.createElement("p");
@@ -259,59 +282,161 @@ function criarCard(especie, foto) {
     return card;
 }
 
-function mostrarEsqueletos(quantidade) {
-    const fragmento = document.createDocumentFragment();
-
-    for (let indice = 0; indice < quantidade; indice += 1) {
-        const esqueleto = document.createElement("section");
-        esqueleto.className = "card-catalogo esqueleto";
-        esqueleto.setAttribute("aria-hidden", "true");
-        esqueleto.innerHTML = `
-            <span class="bloco-esqueleto imagem"></span>
-            <span class="bloco-esqueleto titulo"></span>
-            <span class="bloco-esqueleto botao"></span>
-        `;
-        fragmento.appendChild(esqueleto);
-    }
-
-    listaCatalogo.replaceChildren(fragmento);
+function normalizarBusca(texto) {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 }
+
+function especiesFiltradas() {
+    const termo = normalizarBusca(buscaEspecies.value);
+    return ESPECIES_CATALOGO.filter(especie => {
+        const nome = normalizarBusca(`${especie.nomePopular} ${especie.nomeCientifico} ${(especie.sinonimos || []).join(" ")}`);
+        const situacao = filtroSituacao.value;
+        const corresponde = !situacao || (situacao === "ameacada"
+            ? ["VU", "EN", "CR"].includes(especie.statusConservacao)
+            : especie.grupo === situacao);
+        return nome.includes(termo) && corresponde &&
+            (!filtroConservacao.value || especie.statusConservacao === filtroConservacao.value);
+    });
+}
+
+function atualizarResultados() {
+    const especies = especiesFiltradas();
+    const visiveis = especies.slice(0, limiteExibicao);
+    const ids = new Set(visiveis.map(especie => especie.id));
+    if (audioTocandoAgora && !ids.has(audioTocandoAgora.closest(".card-catalogo")?.dataset.especieId)) pararAudioAtual();
+    // Reutiliza os mesmos cards e players; filtrar não consulta a API.
+    for (const [id, card] of cardsCatalogo) card.hidden = !ids.has(id);
+    const fragmento = document.createDocumentFragment();
+    for (const especie of visiveis) {
+        if (!cardsCatalogo.has(especie.id)) {
+            const card = criarCard(especie, fotosCatalogo.get(especie.id));
+            cardsCatalogo.set(especie.id, card);
+            fragmento.appendChild(card);
+        }
+    }
+    listaCatalogo.appendChild(fragmento);
+    // Cards criados em buscas anteriores voltam à ordem original.
+    visiveis.forEach(especie => listaCatalogo.appendChild(cardsCatalogo.get(especie.id)));
+    document.getElementById("catalogoVazio").hidden = especies.length !== 0;
+    mostrarMaisAves.hidden = visiveis.length >= especies.length;
+    mostrarMaisAves.textContent = `Mostrar mais aves (${especies.length - visiveis.length} restantes)`;
+    resultadoBusca.textContent = `Mostrando ${visiveis.length} de ${especies.length} aves encontradas. Catálogo com ${ESPECIES_CATALOGO.length} espécies.`;
+}
+
+function abrirFicha(especie, card, origem) {
+    if (audioTocandoAgora && !card.contains(audioTocandoAgora)) pararAudioAtual();
+    document.getElementById("tituloFicha").textContent = especie.nomePopular;
+    const dados = document.getElementById("dadosFicha");
+    dados.replaceChildren();
+    const dl = document.createElement("dl");
+    const campos = [
+        ["Nome científico", especie.nomeCientifico],
+        ["Situação", especie.grupo === "extinta" ? "Extinta" : especie.grupo === "extinta-na-natureza" ? "Extinta na natureza (indivíduos ainda existem)" : "Viva"],
+        ["Conservação", `${especie.statusConservacao} — ${especie.statusConservacaoNome}`],
+        ["Referência da classificação", especie.conservacaoReferencia],
+        [especie.grupo === "extinta" ? "Ocorrência histórica" : "Ocorrência / distribuição", especie.ocorrencia],
+        [especie.grupo === "extinta" ? "Habitat histórico" : "Habitat", especie.habitat],
+        ["Características", especie.caracteristicas],
+    ];
+    if (especie.sinonimos?.length) campos.push(["Outros nomes científicos", especie.sinonimos.join("; ")]);
+    if (especie.notaConservacao) campos.push(["Observação", especie.notaConservacao]);
+    if (especie.grupo === "extinta") campos.push(["Sobre a imagem", "Imagens de espécies extintas podem ser ilustrações, reconstruções ou exemplares de museu; não representam uma ave viva atual."]);
+    for (const [rotulo, texto] of campos) {
+        const dt = document.createElement("dt"); dt.textContent = rotulo;
+        const dd = document.createElement("dd"); dd.textContent = texto;
+        dl.append(dt, dd);
+    }
+    dados.appendChild(dl);
+    const tituloFontes = document.createElement("h3"); tituloFontes.textContent = "Fontes";
+    dados.appendChild(tituloFontes);
+    const fontes = document.createElement("ul");
+    for (const [texto, url] of [["Identificação, habitat e características", especie.fonteUrl], ["Conservação", especie.fonteConservacao], ["Registro de conservação no iNaturalist", especie.fonteConservacaoConsulta], ["Referência taxonômica", especie.fonteTaxonomia]]) {
+        if (!url) continue;
+        const li = document.createElement("li"); const link = document.createElement("a");
+        link.href = url; link.target = "_blank"; link.rel = "noopener noreferrer";
+        link.textContent = `${texto} (abre em outra aba)`; li.appendChild(link); fontes.appendChild(li);
+    }
+    dados.appendChild(fontes);
+    const consulta = document.createElement("p"); consulta.className = "nota-conservacao";
+    consulta.textContent = `Fontes consultadas em ${especie.dataConsulta.split("-").reverse().join("/")}. A classificação pode mudar após nova avaliação.`;
+    dados.appendChild(consulta);
+    definirMensagem(document.getElementById("mensagemFicha"), "");
+    // Move o card, sem clonar áudio/favorito ou criar IDs duplicados.
+    const lugar = document.createElement("div");
+    lugar.className = "lugar-ficha"; lugar.style.height = `${card.getBoundingClientRect().height}px`;
+    lugar.setAttribute("aria-hidden", "true");
+    card.replaceWith(lugar);
+    fichaAberta = { card, lugar, origem };
+    document.getElementById("midiaFicha").appendChild(card);
+    fichaEspecie.showModal();
+}
+
+document.getElementById("fecharFicha").addEventListener("click", () => fichaEspecie.close());
+fichaEspecie.addEventListener("keydown", evento => {
+    if (evento.key !== "Tab") return;
+    const controles = [...fichaEspecie.querySelectorAll("a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled)")]
+        .filter(elemento => elemento.getClientRects().length && elemento.tabIndex >= 0);
+    const primeiro = controles[0], ultimo = controles[controles.length - 1];
+    if (evento.shiftKey && document.activeElement === primeiro) {
+        evento.preventDefault(); ultimo?.focus();
+    } else if (!evento.shiftKey && document.activeElement === ultimo) {
+        evento.preventDefault(); primeiro?.focus();
+    }
+});
+fichaEspecie.addEventListener("close", () => {
+    if (!fichaAberta) return;
+    const { card, lugar, origem } = fichaAberta;
+    if (card.contains(audioTocandoAgora)) pararAudioAtual();
+    lugar.replaceWith(card);
+    fichaAberta = null;
+    origem.focus();
+});
+
+for (const codigo of Object.keys(CATEGORIAS_CONSERVACAO)) {
+    if (!ESPECIES_CATALOGO.some(especie => especie.statusConservacao === codigo)) continue;
+    const opcao = document.createElement("option");
+    opcao.value = codigo; opcao.textContent = `${codigo} — ${CATEGORIAS_CONSERVACAO[codigo]}`;
+    filtroConservacao.appendChild(opcao);
+}
+for (const campo of [buscaEspecies, filtroSituacao, filtroConservacao]) {
+    campo.addEventListener(campo === buscaEspecies ? "input" : "change", () => {
+        limiteExibicao = AVES_POR_LOTE;
+        atualizarResultados();
+    });
+}
+document.querySelector(".filtros-catalogo").addEventListener("submit", evento => evento.preventDefault());
+document.querySelector(".filtros-catalogo").addEventListener("reset", () => {
+    setTimeout(() => { limiteExibicao = AVES_POR_LOTE; atualizarResultados(); }, 0);
+});
+mostrarMaisAves.addEventListener("click", () => {
+    const quantidadeAnterior = Math.min(limiteExibicao, especiesFiltradas().length);
+    limiteExibicao += AVES_POR_LOTE;
+    atualizarResultados();
+    const proxima = especiesFiltradas()[quantidadeAnterior];
+    cardsCatalogo.get(proxima?.id)?.querySelector(".botao-ficha")?.focus();
+});
 
 async function carregarCatalogo() {
     const especies = ESPECIES_CATALOGO;
+    let proxima = 0, carregadas = 0, semFotoAPI = 0;
+    atualizarResultados(); // Nomes, fichas e filtros funcionam antes das fotos.
     listaCatalogo.setAttribute("aria-busy", "true");
-    mostrarEsqueletos(especies.length);
-    const lugares = [...listaCatalogo.children];
-    let proxima = 0;
-    let carregadas = 0;
-    let semFotoAPI = 0;
-    definirMensagem(mensagemCatalogo, `Carregando 0 de ${especies.length} aves...`, "carregando");
-
-    // Quatro trabalhadores: cards chegam progressivamente na ordem da lista.
+    definirMensagem(mensagemCatalogo, `Carregando fotos: 0 de ${especies.length} aves...`, "carregando");
     async function carregarProxima() {
         while (proxima < especies.length) {
-            const indice = proxima++;
-            const especie = especies[indice];
+            const especie = especies[proxima++];
             let foto = null;
-            try {
-                foto = await buscarFotoINaturalist(especie.nomeCientifico);
-            } catch (erro) {
-                semFotoAPI++;
-                console.warn(`Foto indisponível para ${especie.nomeCientifico}:`, erro.message);
-            }
-            lugares[indice].replaceWith(criarCard(especie, foto));
+            try { foto = await buscarFotoINaturalist(especie.nomeCientifico, especie.termoBuscaFoto); }
+            catch (erro) { semFotoAPI++; console.warn(`Foto indisponível para ${especie.nomeCientifico}:`, erro.message); }
+            fotosCatalogo.set(especie.id, foto);
+            cardsCatalogo.get(especie.id)?.querySelector(".area-foto")?.replaceWith(criarFoto(especie, foto));
             carregadas++;
-            definirMensagem(mensagemCatalogo, `Carregando ${carregadas} de ${especies.length} aves...`, "carregando");
+            definirMensagem(mensagemCatalogo, `Carregando fotos: ${carregadas} de ${especies.length} aves...`, "carregando");
         }
     }
-
     try {
         await Promise.all(Array.from({ length: Math.min(REQUISICOES_PARALELAS, especies.length) }, carregarProxima));
-        definirMensagem(mensagemCatalogo,
-            `${carregadas} aves no catálogo.${semFotoAPI ? ` ${semFotoAPI} sem foto da API; usando alternativa quando disponível.` : ""}`);
-    } finally {
-        listaCatalogo.removeAttribute("aria-busy");
-    }
+        definirMensagem(mensagemCatalogo, `${especies.length} aves no catálogo.${semFotoAPI ? ` ${semFotoAPI} sem foto da API; usando alternativa quando disponível.` : ""}`);
+    } finally { listaCatalogo.removeAttribute("aria-busy"); }
 }
-
 carregarCatalogo();

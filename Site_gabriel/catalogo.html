@@ -37,20 +37,57 @@
 
     <div class="hero-catalogo">
         <div class="topo">
-            <p class="etiqueta">catalogo de cantos</p>
-            <h1>Conheça as aves e descubra seus cantos.</h1>
+            <p class="etiqueta">enciclopédia de aves</p>
+            <h1>Conheça as aves, seus habitats e seus cantos.</h1>
         </div>
     </div>
 
     <main id="conteudo" tabindex="-1">
         <section class="intro">
-            <h2>Foto, audio e nome cientifico</h2>
-            <p>Os nomes das espécies vêm da lista do projeto. As fotografias são consultadas no iNaturalist; os cantos usam gravações locais quando disponíveis.</p>
+            <h2>Explore o catálogo</h2>
+            <p>Encontre aves vivas, ameaçadas e extintas. Abra a ficha para conhecer habitat, ocorrência, características e fontes. Fotografias vêm do iNaturalist; áudios são gravações locais quando disponíveis.</p>
+            <p class="nota-conservacao">Ameaçadas são as categorias VU, EN e CR. NT significa quase ameaçada; EW significa extinta na natureza, com indivíduos ainda existentes. As classificações globais podem diferir das listas brasileiras.</p>
         </section>
 
+        <form class="filtros-catalogo" role="search" aria-label="Buscar aves">
+            <div class="campo-busca">
+                <label for="buscaEspecies">Nome popular ou científico</label>
+                <input id="buscaEspecies" type="search" placeholder="Buscar por nome popular ou científico..." aria-controls="listaCatalogo">
+            </div>
+            <div>
+                <label for="filtroSituacao">Situação</label>
+                <select id="filtroSituacao" aria-controls="listaCatalogo">
+                    <option value="">Todas</option>
+                    <option value="viva">Vivas (inclui ameaçadas)</option>
+                    <option value="ameacada">Ameaçadas (VU, EN, CR)</option>
+                    <option value="extinta">Extintas (EX)</option>
+                    <option value="extinta-na-natureza">Extintas na natureza (EW)</option>
+                </select>
+            </div>
+            <div>
+                <label for="filtroConservacao">Conservação</label>
+                <select id="filtroConservacao" aria-controls="listaCatalogo"><option value="">Todas as categorias</option></select>
+            </div>
+            <button type="reset">Limpar busca e filtros</button>
+        </form>
+        <p id="resultadoBusca" role="status" aria-live="polite" aria-atomic="true"></p>
         <p class="mensagem" id="mensagemCatalogo"></p>
-        <div id="listaCatalogo" class="grade-catalogo" aria-live="polite"></div>
+        <p id="catalogoVazio" class="estado-vazio" hidden>Nenhuma ave encontrada para esta busca.</p>
+        <div id="listaCatalogo" class="grade-catalogo"></div>
+        <button id="mostrarMaisAves" type="button" hidden>Mostrar mais aves</button>
     </main>
+
+    <dialog id="fichaEspecie" aria-labelledby="tituloFicha">
+        <div class="topo-ficha">
+            <h2 id="tituloFicha"></h2>
+            <button type="button" id="fecharFicha" autofocus>Fechar ficha</button>
+        </div>
+        <p id="mensagemFicha" class="mensagem" role="status" aria-live="polite"></p>
+        <div class="conteudo-ficha">
+            <div id="midiaFicha" class="midia-ficha"></div>
+            <div id="dadosFicha"></div>
+        </div>
+    </dialog>
 
     <div class="cursor" aria-hidden="true">
         <span class="cursor-ring"></span>
