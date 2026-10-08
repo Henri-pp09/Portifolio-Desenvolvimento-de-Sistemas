@@ -24,12 +24,6 @@ let fichaAberta = null;
 let audioTocandoAgora = null;
 let botaoTocandoAgora = null;
 
-function escaparTextoCatalogo(texto) {
-    const div = document.createElement("div");
-    div.textContent = texto;
-    return div.innerHTML;
-}
-
 const TEMPO_LIMITE_FOTO = 8000;
 const REQUISICOES_PARALELAS = 4;
 
@@ -68,7 +62,7 @@ function criarFoto(especie, foto) {
     if (!url) return area;
 
     const img = document.createElement("img");
-    img.alt = especie.nomePopular || especie.nomeCientifico;
+    img.alt = especie.nomePopular || "Pássaro";
     img.loading = "lazy";
     img.decoding = "async";
     img.className = "imagem-carregando";
@@ -167,12 +161,8 @@ function criarCard(especie, foto) {
     card.appendChild(criarFoto(especie, foto));
 
     const nome = document.createElement("h3");
-    nome.textContent = especie.nomePopular || especie.nomeCientifico;
+    nome.textContent = especie.nomePopular || "Pássaro";
     card.appendChild(nome);
-    const cientifico = document.createElement("p");
-    cientifico.className = "nome-cientifico";
-    cientifico.innerHTML = `<em>${escaparTextoCatalogo(especie.nomeCientifico)}</em>`;
-    card.appendChild(cientifico);
     const selo = document.createElement("p");
     selo.className = `selo-conservacao status-${especie.statusConservacao.toLowerCase()}`;
     selo.textContent = `${especie.statusConservacao} — ${especie.statusConservacaoNome}`;
@@ -197,7 +187,7 @@ function criarCard(especie, foto) {
     const audio = document.createElement("audio");
     audio.src = especie.audioUrl;
     audio.preload = "none";
-    audio.setAttribute("aria-label", `Canto de ${especie.nomePopular || especie.nomeCientifico}`);
+    audio.setAttribute("aria-label", `Canto de ${especie.nomePopular || "Pássaro"}`);
     card.appendChild(audio);
 
     const mensagemAudio = document.createElement("p");
@@ -208,7 +198,7 @@ function criarCard(especie, foto) {
     const botao = document.createElement("button");
     botao.type = "button";
     botao.setAttribute("aria-describedby", mensagemAudio.id);
-    botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || especie.nomeCientifico}`);
+    botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || "Pássaro"}`);
     atualizarBotaoAudio(botao, "parado");
     let tempoLimite;
     let indisponivel = false;
@@ -243,7 +233,7 @@ function criarCard(especie, foto) {
             // Uma promessa antiga não pode reiniciar a faixa depois da troca.
             if (audioTocandoAgora !== audio) { audio.pause(); return; }
             atualizarBotaoAudio(botao, "tocando");
-            botao.setAttribute("aria-label", `Pausar canto de ${especie.nomePopular || especie.nomeCientifico}`);
+            botao.setAttribute("aria-label", `Pausar canto de ${especie.nomePopular || "Pássaro"}`);
             definirMensagem(mensagemAudio, "Reproduzindo canto.");
         } catch (erro) {
             limparLimite();
@@ -258,7 +248,7 @@ function criarCard(especie, foto) {
         limparLimite();
         if (!audio.error && !indisponivel) {
             atualizarBotaoAudio(botao, "parado");
-            botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || especie.nomeCientifico}`);
+            botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || "Pássaro"}`);
             definirMensagem(mensagemAudio, "Reprodução pausada.");
         }
     });
@@ -271,7 +261,7 @@ function criarCard(especie, foto) {
     audio.addEventListener("ended", () => {
         limparLimite();
         atualizarBotaoAudio(botao, "parado");
-        botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || especie.nomeCientifico}`);
+        botao.setAttribute("aria-label", `Reproduzir canto de ${especie.nomePopular || "Pássaro"}`);
         definirMensagem(mensagemAudio, "Canto concluído.");
         if (audioTocandoAgora === audio) {
             audioTocandoAgora = null;
@@ -330,7 +320,6 @@ function abrirFicha(especie, card, origem) {
     dados.replaceChildren();
     const dl = document.createElement("dl");
     const campos = [
-        ["Nome científico", especie.nomeCientifico],
         ["Situação", especie.grupo === "extinta" ? "Extinta" : especie.grupo === "extinta-na-natureza" ? "Extinta na natureza (indivíduos ainda existem)" : "Viva"],
         ["Conservação", `${especie.statusConservacao} — ${especie.statusConservacaoNome}`],
         ["Referência da classificação", especie.conservacaoReferencia],
@@ -338,7 +327,6 @@ function abrirFicha(especie, card, origem) {
         [especie.grupo === "extinta" ? "Habitat histórico" : "Habitat", especie.habitat],
         ["Características", especie.caracteristicas],
     ];
-    if (especie.sinonimos?.length) campos.push(["Outros nomes científicos", especie.sinonimos.join("; ")]);
     if (especie.notaConservacao) campos.push(["Observação", especie.notaConservacao]);
     if (especie.grupo === "extinta") campos.push(["Sobre a imagem", "Imagens de espécies extintas podem ser ilustrações, reconstruções ou exemplares de museu; não representam uma ave viva atual."]);
     for (const [rotulo, texto] of campos) {

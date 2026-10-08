@@ -224,10 +224,11 @@ function alternarLike(postId, usuarioId) {
     const post = posts.find((p) => p.id === postId);
     if (!post) return null;
 
-    const jaCurtiu = post.curtidas.includes(usuarioId);
+    const curtidas = Array.isArray(post.curtidas) ? post.curtidas : [];
+    const jaCurtiu = curtidas.includes(usuarioId);
     post.curtidas = jaCurtiu
-        ? post.curtidas.filter((id) => id !== usuarioId)
-        : [...post.curtidas, usuarioId];
+        ? curtidas.filter((id) => id !== usuarioId)
+        : [...curtidas, usuarioId];
 
     salvarPosts(posts);
     return post;

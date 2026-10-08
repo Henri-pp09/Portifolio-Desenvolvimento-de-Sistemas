@@ -1,168 +1,189 @@
-// perfil.js
-// Mostra os dados reais do usuario logado, seus posts, e permite alterar
-// avatar, banner e passaros favoritos.
-// Requer armazenamento.js, especies.js e cursor.js incluidos ANTES deste arquivo.
+// Perfil público por ID; sem ID, mostra a conta da sessão existente.
+// Requer armazenamento.js, especies.js e estado.js.
+const parametrosPerfil = new URLSearchParams(window.location.search);
+const mensagemPerfil = document.getElementById("mensagemPerfil");
+const conteudoPerfil = document.getElementById("conteudoPerfil");
+const controlesPerfil = document.getElementById("controlesPerfil");
+const botaoSair = document.getElementById("botaoSair");
+const campoAvatar = document.getElementById("campoAvatar");
+const campoBanner = document.getElementById("campoBanner");
+let perfilVisualizado = null;
 
-const usuarioAtual = usuarioLogado();
-
-if (!usuarioAtual) {
-    // Ninguem logado neste navegador: manda para o login em vez de
-    // mostrar um perfil fictício.
-    window.location.href = "login.html";
-} else {
-    document.getElementById("nomePerfil").textContent = usuarioAtual.nome;
-    document.getElementById("bioPerfil").textContent =
-        usuarioAtual.bio || "Esse usuario ainda nao escreveu uma bio.";
-    document.getElementById("usuarioPerfil").textContent = `@${usuarioAtual.usuario}`;
-
-    const avatarEl = document.getElementById("avatarPerfil");
-    if (usuarioAtual.avatarUrl) {
-        avatarEl.style.backgroundImage = `url(${usuarioAtual.avatarUrl})`;
-        avatarEl.style.backgroundSize = "cover";
-        avatarEl.style.backgroundPosition = "center";
-        avatarEl.textContent = "";
-    } else {
-        avatarEl.innerHTML = `<i class="fa-solid fa-fish" aria-hidden="true"></i>`;
-    }
-
-    const capaPerfil = document.getElementById("capaPerfil");
-    if (usuarioAtual.bannerUrl && capaPerfil) {
-        capaPerfil.style.backgroundImage = `linear-gradient(135deg, rgba(13, 54, 58, 0.85), rgba(255, 122, 69, 0.35)), url(${usuarioAtual.bannerUrl})`;
-    }
-
-    const meusPosts = postsDoUsuario(usuarioAtual.id);
-    const contagemPosts = document.getElementById("contagemPosts");
-    if (contagemPosts) contagemPosts.textContent = meusPosts.length;
-
-    const colunaPosts = document.getElementById("colunaPosts");
-    colunaPosts.innerHTML = "";
-
-    if (meusPosts.length === 0) {
-        colunaPosts.innerHTML =
-            "<p>Voce ainda nao publicou nada. Va ate o feed e cante alguma coisa!</p>";
-    } else {
-        meusPosts.forEach((post) => {
-            const artigo = document.createElement("article");
-            artigo.className = "post";
-            artigo.innerHTML = `
-                <div class="topo-post">
-                    <div class="avatar"><i class="fa-solid fa-fish" aria-hidden="true"></i></div>
-                    <div><strong>${escaparHTML(usuarioAtual.nome)}</strong></div>
-                </div>
-                <p>${escaparHTML(post.texto)}</p>
-                ${post.imagemUrl ? `<div class="midia-post"><img src="${escaparHTML(post.imagemUrl)}" alt="Imagem publicada por @${escaparHTML(post.autorUsuario)}" loading="lazy" decoding="async"></div>` : ""}
-                <div class="acoes-post">
-                    <span>${post.curtidas.length} curtida(s)</span>
-                </div>
-            `;
-            colunaPosts.appendChild(artigo);
-        });
-    }
-
-    informarFalhasDeImagem(colunaPosts);
-
-    // ---------- Avatar e banner ----------
-    const campoAvatar = document.getElementById("campoAvatar");
-    const campoBanner = document.getElementById("campoBanner");
-    const mensagemImagens = document.getElementById("mensagemImagens");
-
-    if (campoAvatar) {
-        campoAvatar.addEventListener("change", async () => {
-            const arquivo = campoAvatar.files[0];
-            if (!arquivo) return;
-
-            const rotuloArquivo = campoAvatar.closest(".rotulo-arquivo");
-            campoAvatar.disabled = true;
-            rotuloArquivo?.classList.add("em-carregamento");
-            rotuloArquivo?.setAttribute("aria-busy", "true");
-            definirMensagem(mensagemImagens, "Processando foto de perfil...", "carregando");
-
-            try {
-                validarArquivoDeImagem(arquivo);
-                const dataUrl = await redimensionarImagem(arquivo, 300);
-                atualizarUsuario(usuarioAtual.id, { avatarUrl: dataUrl });
-                definirMensagem(mensagemImagens, "Foto de perfil atualizada!", "sucesso");
-                setTimeout(() => navegarComTransicao(window.location.href), 500);
-            } catch (erro) {
-                definirMensagem(mensagemImagens, erro.message, "erro");
-            } finally {
-                campoAvatar.disabled = false;
-                rotuloArquivo?.classList.remove("em-carregamento");
-                rotuloArquivo?.removeAttribute("aria-busy");
-            }
-        });
-    }
-
-    if (campoBanner) {
-        campoBanner.addEventListener("change", async () => {
-            const arquivo = campoBanner.files[0];
-            if (!arquivo) return;
-
-            const rotuloArquivo = campoBanner.closest(".rotulo-arquivo");
-            campoBanner.disabled = true;
-            rotuloArquivo?.classList.add("em-carregamento");
-            rotuloArquivo?.setAttribute("aria-busy", "true");
-            definirMensagem(mensagemImagens, "Processando banner...", "carregando");
-
-            try {
-                validarArquivoDeImagem(arquivo);
-                const dataUrl = await redimensionarImagem(arquivo, 1200);
-                atualizarUsuario(usuarioAtual.id, { bannerUrl: dataUrl });
-                definirMensagem(mensagemImagens, "Banner atualizado!", "sucesso");
-                setTimeout(() => navegarComTransicao(window.location.href), 500);
-            } catch (erro) {
-                definirMensagem(mensagemImagens, erro.message, "erro");
-            } finally {
-                campoBanner.disabled = false;
-                rotuloArquivo?.classList.remove("em-carregamento");
-                rotuloArquivo?.removeAttribute("aria-busy");
-            }
-        });
-    }
-
-    // ---------- Passaros favoritos ----------
-    const listaFavoritos = document.getElementById("listaFavoritos");
-
-    function renderizarFavoritos() {
-        if (!listaFavoritos) return;
-        listaFavoritos.innerHTML = "";
-
-        ESPECIES_CATALOGO.forEach((especie) => {
-            const favoritado = listarFavoritos(usuarioAtual.id).includes(especie.id);
-
-            const item = document.createElement("button");
-            item.type = "button";
-            item.setAttribute("aria-pressed", String(favoritado));
-            item.className = favoritado ? "tag-favorito ativo" : "tag-favorito";
-            item.innerHTML = `${favoritado ? "★" : "☆"} <em>${escaparHTML(especie.nomeCientifico)}</em>`;
-
-            item.addEventListener("click", () => {
-                let usuarioAtualizado;
-                try {
-                    usuarioAtualizado = alternarFavorito(usuarioAtual.id, especie.id);
-                    definirMensagem(document.getElementById("mensagemFavoritos"), favoritado
-                        ? "Removido dos favoritos." : "Adicionado aos favoritos.", "sucesso");
-                } catch {
-                    definirMensagem(document.getElementById("mensagemFavoritos"), "Não foi possível salvar os favoritos.", "erro");
-                    return;
-                }
-                if (usuarioAtualizado) {
-                    usuarioAtual.favoritos = usuarioAtualizado.favoritos;
-                    renderizarFavoritos();
-                }
-            });
-
-            listaFavoritos.appendChild(item);
-        });
-    }
-
-    renderizarFavoritos();
+function ehMeuPerfil() {
+    const usuarioLogadoAtual = usuarioLogado();
+    return Boolean(usuarioLogadoAtual && perfilVisualizado &&
+        usuarioLogadoAtual.id === perfilVisualizado.id);
 }
 
-const botaoSair = document.getElementById("botaoSair");
-if (botaoSair) {
-    botaoSair.addEventListener("click", () => {
-        encerrarSessao();
-        navegarComTransicao("hub.html");
+function renderizarFavoritos() {
+    const lista = document.getElementById("listaFavoritos");
+    lista.replaceChildren();
+    const ids = listarFavoritos(perfilVisualizado.id);
+    const favoritas = ESPECIES_CATALOGO.filter(especie => ids.includes(especie.id));
+    document.getElementById("contagemFavoritos").textContent = favoritas.length;
+    document.getElementById("rotuloFavoritos").textContent = favoritas.length === 1 ? "pássaro favorito" : "pássaros favoritos";
+    document.getElementById("explorarCatalogo").hidden = !ehMeuPerfil();
+    if (!favoritas.length) {
+        const vazio = document.createElement("p");
+        vazio.className = "estado-vazio";
+        vazio.textContent = ehMeuPerfil()
+            ? "Você ainda não favoritou nenhum pássaro."
+            : "Este usuário ainda não favoritou nenhum pássaro.";
+        lista.appendChild(vazio);
+        return;
+    }
+    favoritas.forEach(especie => {
+        const card = document.createElement("article");
+        card.className = "card-favorito";
+        const foto = document.createElement("div");
+        foto.className = "foto-favorito";
+        const reserva = document.createElement("span");
+        reserva.textContent = "Foto não disponível";
+        foto.appendChild(reserva);
+        if (especie.fotoLocal) {
+            const imagem = document.createElement("img");
+            imagem.alt = especie.nomePopular || "Pássaro";
+            imagem.loading = "lazy";
+            imagem.decoding = "async";
+            imagem.addEventListener("error", () => imagem.remove(), { once: true });
+            imagem.src = especie.fotoLocal;
+            foto.appendChild(imagem);
+        }
+        const nome = document.createElement("h3");
+        nome.textContent = especie.nomePopular || "Pássaro";
+        card.append(foto, nome);
+        lista.appendChild(card);
     });
 }
+
+function renderizarPublicacoes() {
+    const posts = postsDoUsuario(perfilVisualizado.id);
+    document.getElementById("contagemPosts").textContent = posts.length;
+    document.getElementById("rotuloPublicacoes").textContent = posts.length === 1 ? "publicação" : "publicações";
+    const coluna = document.getElementById("colunaPosts");
+    coluna.replaceChildren();
+    if (!posts.length) {
+        const vazio = document.createElement("p");
+        vazio.className = "estado-vazio painel";
+        vazio.textContent = ehMeuPerfil()
+            ? "Você ainda não publicou nada."
+            : "Este usuário ainda não publicou nada.";
+        coluna.appendChild(vazio);
+        return;
+    }
+    posts.forEach(post => {
+        const artigo = document.createElement("article");
+        artigo.className = "post";
+        const texto = document.createElement("p");
+        texto.textContent = post.texto;
+        artigo.append(criarCabecalhoPost(post), texto);
+        const midia = criarMidiaPost(post);
+        if (midia) artigo.appendChild(midia);
+        const curtidas = document.createElement("div");
+        curtidas.className = "acoes-post";
+        curtidas.textContent = `${Array.isArray(post.curtidas) ? post.curtidas.length : 0} curtida(s)`;
+        artigo.appendChild(curtidas);
+        coluna.appendChild(artigo);
+    });
+    informarFalhasDeImagem(coluna);
+}
+
+function renderizarPerfil() {
+    atualizarNavegacaoDaSessao();
+    controlesPerfil.hidden = true;
+    botaoSair.hidden = true;
+    campoAvatar.disabled = true;
+    campoBanner.disabled = true;
+    conteudoPerfil.hidden = true;
+    // Um ID inválido nunca deve cair silenciosamente no perfil da sessão.
+    perfilVisualizado = parametrosPerfil.has("id")
+        ? buscarUsuarioPorId(parametrosPerfil.get("id"))
+        : usuarioLogado();
+    if (!perfilVisualizado) {
+        definirMensagem(mensagemPerfil, parametrosPerfil.has("id")
+            ? "Perfil não encontrado."
+            : "Entre na sua conta para ver seu perfil.", parametrosPerfil.has("id") ? "erro" : "info");
+        document.getElementById("entrarPerfil").hidden = parametrosPerfil.has("id");
+        document.title = "Perfil | Aviário Sonoro";
+        conteudoPerfil.removeAttribute("aria-busy");
+        return;
+    }
+    const meuPerfil = ehMeuPerfil();
+    document.getElementById("entrarPerfil").hidden = true;
+    document.getElementById("nomePerfil").textContent = perfilVisualizado.nome || "Usuário do Aviário";
+    document.getElementById("usuarioPerfil").textContent = `@${perfilVisualizado.usuario || "usuario"}`;
+    document.getElementById("bioPerfil").textContent = perfilVisualizado.bio || "Este usuário ainda não escreveu uma bio.";
+    document.title = `${perfilVisualizado.nome || "Perfil"} | Aviário Sonoro`;
+    renderizarAvatar(document.getElementById("avatarPerfil"), perfilVisualizado);
+    const banner = document.getElementById("bannerPerfil");
+    banner.replaceChildren();
+    const bannerUrl = urlImagemPermitida(perfilVisualizado.bannerUrl);
+    if (bannerUrl) {
+        const imagem = document.createElement("img");
+        imagem.alt = `Banner de ${perfilVisualizado.nome || "usuário"}`;
+        imagem.addEventListener("error", () => imagem.remove(), { once: true });
+        imagem.src = bannerUrl;
+        banner.appendChild(imagem);
+    }
+    controlesPerfil.hidden = !meuPerfil;
+    botaoSair.hidden = !meuPerfil;
+    campoAvatar.disabled = !meuPerfil;
+    campoBanner.disabled = !meuPerfil;
+    renderizarFavoritos();
+    renderizarPublicacoes();
+    definirMensagem(mensagemPerfil, "");
+    conteudoPerfil.hidden = false;
+    conteudoPerfil.removeAttribute("aria-busy");
+}
+
+function prepararUpload(campo, propriedade, dimensao, descricao) {
+    campo.addEventListener("change", async () => {
+        if (!ehMeuPerfil() || campo.disabled) return;
+        const arquivo = campo.files[0];
+        if (!arquivo) return;
+        const donoId = perfilVisualizado.id;
+        const rotulo = campo.closest(".rotulo-arquivo");
+        const mensagem = document.getElementById("mensagemImagens");
+        campo.disabled = true;
+        rotulo.classList.add("em-carregamento");
+        rotulo.setAttribute("aria-busy", "true");
+        definirMensagem(mensagem, `Processando ${descricao}...`, "carregando");
+        try {
+            validarArquivoDeImagem(arquivo);
+            const dataUrl = await redimensionarImagem(arquivo, dimensao);
+            // Revalida a sessão depois do processamento assíncrono da foto.
+            if (!ehMeuPerfil() || usuarioLogado()?.id !== donoId) {
+                throw new Error("Entre novamente na sua conta para alterar esta imagem.");
+            }
+            if (!atualizarUsuario(donoId, { [propriedade]: dataUrl })) {
+                throw new Error("Perfil não encontrado.");
+            }
+            renderizarPerfil();
+            definirMensagem(mensagem, "Imagem do perfil atualizada!", "sucesso");
+        } catch (erro) {
+            definirMensagem(mensagem, erro.message, "erro");
+        } finally {
+            campo.value = "";
+            campo.disabled = !ehMeuPerfil();
+            rotulo.classList.remove("em-carregamento");
+            rotulo.removeAttribute("aria-busy");
+        }
+    });
+}
+
+prepararUpload(campoAvatar, "avatarUrl", 300, "foto de perfil");
+prepararUpload(campoBanner, "bannerUrl", 1200, "banner");
+botaoSair.addEventListener("click", () => {
+    if (!ehMeuPerfil()) return;
+    encerrarSessao();
+    navegarComTransicao("hub.html");
+});
+// Atualiza também ao voltar do catálogo e quando outra aba muda os dados.
+window.addEventListener("pageshow", evento => {
+    if (evento.persisted) renderizarPerfil();
+});
+window.addEventListener("storage", evento => {
+    if ([CHAVE_USUARIOS, CHAVE_POSTS, CHAVE_SESSAO, null].includes(evento.key)) renderizarPerfil();
+});
+definirMensagem(mensagemPerfil, "Carregando perfil...", "carregando");
+requestAnimationFrame(() => setTimeout(renderizarPerfil, 0));
