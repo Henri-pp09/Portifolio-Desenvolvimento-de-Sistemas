@@ -27,6 +27,10 @@ if (usuarioAtual) {
     document.getElementById("nomeHub").textContent = usuarioAtual.nome;
     document.getElementById("usuarioHub").textContent = `@${usuarioAtual.usuario}`;
     document.getElementById("avatarHub").innerHTML = `<i class="fa-solid fa-fish" aria-hidden="true"></i>`;
+    const acaoPerfil = document.getElementById("acaoPerfilHub");
+    acaoPerfil.href = "perfil.html";
+    acaoPerfil.querySelector("i").className = "fa-solid fa-address-card";
+    acaoPerfil.querySelector("span").textContent = "Ver meu perfil";
 }
 
 function renderizarFeed() {
@@ -54,10 +58,10 @@ function renderizarFeed() {
             <p>${escaparHTML(post.texto)}</p>
             ${post.imagemUrl ? `<div class="midia-post"><img src="${escaparHTML(post.imagemUrl)}" alt="Imagem publicada por @${escaparHTML(post.autorUsuario)}" loading="lazy" decoding="async"></div>` : ""}
             <div class="acoes-post">
-                <button type="button" class="botao-curtir" data-id="${post.id}" aria-pressed="${jaCurtiu}" ${
+                <button type="button" class="botao-curtir" data-id="${post.id}" aria-pressed="${jaCurtiu}" aria-label="${jaCurtiu ? "Remover curtida" : "Curtir publicação"}" ${
             usuarioAtual ? "" : "disabled title='Crie um perfil para curtir'"
         }>
-                    ${jaCurtiu ? '<i class="fa-solid fa-heart" aria-hidden="true"></i>Descurtir' : '<i class="fa-regular fa-heart" aria-hidden="true"></i>Curtir'} (${post.curtidas.length})
+                    <i class="${jaCurtiu ? "fa-solid" : "fa-regular"} fa-heart" aria-hidden="true"></i><span>${post.curtidas.length}</span>
                 </button>
             </div>
         `;

@@ -330,6 +330,10 @@ h3 {
     border-color: var(--cor-verde-agua);
 }
 
+.links-nav a[hidden] {
+    display: none;
+}
+
 /* Destaca a pagina em que a pessoa esta agora, marcada no HTML com
    aria-current="page" (tambem ajuda leitores de tela). */
 .links-nav a[aria-current="page"] {
@@ -369,6 +373,23 @@ h3 {
 body.cursor-personalizado,
 body.cursor-personalizado * {
     cursor: none !important;
+}
+
+/* O dialog nativo fica no top layer, acima do cursor personalizado. Durante
+   a ficha usamos o ponteiro do navegador para ele nunca desaparecer. */
+body.cursor-personalizado.ficha-aberta,
+body.cursor-personalizado.ficha-aberta * {
+    cursor: auto !important;
+}
+
+body.cursor-personalizado.ficha-aberta a,
+body.cursor-personalizado.ficha-aberta button,
+body.cursor-personalizado.ficha-aberta [role="button"] {
+    cursor: pointer !important;
+}
+
+body.ficha-aberta .cursor {
+    display: none;
 }
 
 .cursor {
@@ -438,7 +459,7 @@ body.cursor-personalizado * {
     transform: translate(-50%, -50%) scale(1.3);
 }
 
-@media (pointer: coarse), (max-width: 760px) {
+@media (pointer: coarse) {
     .cursor {
         display: none !important;
     }
@@ -548,6 +569,9 @@ button.em-carregamento::before,
 }
 
 .botao-curtir {
+    min-width: 64px;
+    min-height: 40px;
+    padding: 8px 14px;
     background: #eef5f0;
     color: var(--cor-verde-escuro);
     border-color: var(--cor-borda);
@@ -560,7 +584,12 @@ button.em-carregamento::before,
 }
 
 .botao-curtir i {
-    font-size: 1rem;
+    margin-right: 2px;
+    font-size: 1.15rem;
+}
+
+.botao-curtir[aria-pressed="true"] {
+    color: var(--cor-erro);
 }
 
 @media (max-width: 760px) {
@@ -715,102 +744,14 @@ button.em-carregamento::before,
     opacity: 0.45;
 }
 
-/* ---------- Papel de parede personalizavel ----------
- * Escolhido pela pessoa na pagina de perfil (ver aparencia.js) e guardado no
- * navegador dela. So se aplica em paginas marcadas com a classe
- * "fundo-personalizavel" no <body>, para nao interferir no visual das
- * paginas de login/cadastro. Os padroes sao feitos so com gradientes CSS,
- * entao funcionam sem depender de nenhuma imagem externa.
+/* ---------- Fundo compartilhado ----------
+ * Restaura o gradiente simples "amanhecer" que ja existia no projeto e
+ * remove a sobreposicao dos papeis de parede personalizaveis.
  */
-body.fundo-personalizavel[data-papel="folhagem"] {
-    background-color: var(--cor-fundo);
-    background-image: radial-gradient(
-            circle at 18% 22%,
-            rgba(123, 224, 196, 0.4) 0,
-            transparent 42%
-        ),
-        radial-gradient(circle at 82% 4%, rgba(255, 207, 92, 0.3) 0, transparent 38%),
-        radial-gradient(circle at 60% 85%, rgba(13, 107, 99, 0.2) 0, transparent 42%);
-    background-attachment: fixed;
-}
-
-body.fundo-personalizavel[data-papel="amanhecer"] {
+body.fundo-personalizavel {
     background-color: var(--cor-fundo);
     background-image: linear-gradient(180deg, #ffe3b0 0%, #ffd3c2 22%, var(--cor-fundo) 62%);
     background-attachment: fixed;
-}
-
-body.fundo-personalizavel[data-papel="ninho"] {
-    background-color: #f6ede0;
-    background-image: repeating-linear-gradient(
-        135deg,
-        rgba(161, 92, 62, 0.12) 0 10px,
-        transparent 10px 20px
-    );
-}
-
-/* Seletor de papel de parede (montado por aparencia.js dentro do perfil) */
-.grade-papeis {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin: 10px 0 4px;
-}
-
-.amostra-papel {
-    display: grid;
-    gap: 6px;
-    justify-items: center;
-    min-height: 0;
-    padding: 10px;
-    background: #ffffff;
-    color: var(--cor-texto);
-    font-size: 12px;
-    font-weight: 700;
-    border: 1px solid var(--cor-borda);
-    border-radius: var(--raio);
-    box-shadow: none;
-}
-
-.amostra-papel:hover {
-    background: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: var(--sombra-suave);
-}
-
-.amostra-papel.ativo {
-    outline: 3px solid var(--cor-verde-agua);
-    outline-offset: 2px;
-}
-
-.cor-amostra {
-    display: block;
-    width: 100%;
-    height: 34px;
-    border-radius: 6px;
-    border: 1px solid var(--cor-borda);
-}
-
-.amostra-padrao {
-    background: var(--cor-fundo);
-}
-
-.amostra-folhagem {
-    background: radial-gradient(circle at 30% 30%, var(--cor-verde-agua), var(--cor-fundo) 70%);
-}
-
-.amostra-amanhecer {
-    background: linear-gradient(180deg, #ffe3b0, #ffd3c2, var(--cor-fundo));
-}
-
-.amostra-ninho {
-    background: repeating-linear-gradient(135deg, #d8b596 0 8px, #f6ede0 8px 16px);
-}
-
-@media (max-width: 480px) {
-    .grade-papeis {
-        grid-template-columns: 1fr 1fr;
-    }
 }
 
 /* Navegação e controles compartilham a mesma escala em todas as páginas. */

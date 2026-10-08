@@ -78,6 +78,17 @@ function definirBotaoCarregando(botao, carregando, texto = "Carregando...") {
     }
 }
 
+// Links de autenticacao pertencem somente ao estado de visitante. Todas as
+// paginas reutilizam a sessao ja existente em armazenamento.js.
+function atualizarNavegacaoDaSessao() {
+    const autenticado = typeof usuarioLogado === "function" && Boolean(usuarioLogado());
+    document.querySelectorAll("[data-visitante]").forEach((link) => {
+        link.hidden = autenticado;
+    });
+}
+
+atualizarNavegacaoDaSessao();
+
 function prefereMovimentoReduzido() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }

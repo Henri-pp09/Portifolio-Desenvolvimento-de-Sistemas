@@ -368,6 +368,7 @@ function abrirFicha(especie, card, origem) {
     card.replaceWith(lugar);
     fichaAberta = { card, lugar, origem };
     document.getElementById("midiaFicha").appendChild(card);
+    document.body.classList.add("ficha-aberta");
     fichaEspecie.showModal();
 }
 
@@ -384,6 +385,7 @@ fichaEspecie.addEventListener("keydown", evento => {
     }
 });
 fichaEspecie.addEventListener("close", () => {
+    document.body.classList.remove("ficha-aberta");
     if (!fichaAberta) return;
     const { card, lugar, origem } = fichaAberta;
     if (card.contains(audioTocandoAgora)) pararAudioAtual();

@@ -6,10 +6,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="fontawesome/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <title>Aviário Sonoro</title>
     <link rel="stylesheet" href="hub.css">
     <link rel="stylesheet" href="sobre.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
     <link rel="stylesheet" href="ui.css">
 </head>
 <body class="fundo-personalizavel pagina-carregando">
@@ -30,8 +30,7 @@
                 <a href="catalogo.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i>Catálogo</a>
                 <a href="perfil.html"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Perfil</a>
                 <a href="sobre.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Sobre o projeto</a>
-                <a href="login.html"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
-                <a href="cadastro.html"><i class="fa-solid fa-user-plus" aria-hidden="true"></i>Criar perfil</a>
+                <a href="login.html" data-visitante><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Login</a>
             </div>
         </nav>
     </header>
@@ -54,7 +53,7 @@
                     <span id="usuarioHub">@visitante</span>
                 </div>
             </div>
-            <a class="link-secundario" href="perfil.html"><i class="fa-solid fa-address-card" aria-hidden="true"></i>Ver meu perfil</a>
+            <a class="link-secundario" id="acaoPerfilHub" href="cadastro.html"><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Criar meu perfil</span></a>
         </aside>
 
         <section class="feed">
@@ -102,7 +101,6 @@
     </div>
     <script src="armazenamento.js"></script>
     <script src="estado.js"></script>
-    <script src="aparencia.js"></script>
     <script src="cursor.js"></script>
     <script src="hub.js"></script>
 </body>
