@@ -1,197 +1,222 @@
 * {
     box-sizing: border-box;
 }
-
 body {
     margin: 0;
     background: var(--cor-fundo);
 }
-
 .pagina-perfil {
     max-width: 1080px;
     margin: 0 auto;
     padding: 28px 20px 44px;
 }
-
-.capa-perfil {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: end;
-    gap: 22px;
-    min-height: 300px;
-    padding: 28px;
-    color: var(--cor-creme);
-    background:
-        linear-gradient(135deg, rgba(13, 54, 58, 0.96), rgba(255, 122, 69, 0.38)),
-        url("Outras Fotos/Frutiger aero wallpaper.jpg") center/cover;
-    border-radius: var(--raio);
-    box-shadow: 0 16px 40px rgba(24, 51, 47, 0.16);
+.pagina-perfil [hidden] {
+    display: none;
 }
-
-.avatar-grande,
-.avatar {
+.voltar-feed {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: var(--cor-verde-escuro);
+    font-weight: 700;
+}
+.capa-perfil {
+    overflow: hidden;
+    color: var(--cor-creme);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-cartao);
+}
+.banner-perfil {
+    position: relative;
+    height: clamp(160px, 25vw, 260px);
+    background: linear-gradient(135deg, rgba(13, 54, 58, .8), rgba(255, 122, 69, .25)),
+        url("Outras Fotos/Frutiger aero wallpaper.jpg") center/cover;
+}
+.banner-perfil img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.identidade-perfil {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 22px;
+    padding: 0 28px 28px;
+}
+.avatar-grande, .avatar {
     display: grid;
     place-items: center;
     flex: 0 0 auto;
-    border-radius: 8px;
+    overflow: hidden;
+    border-radius: var(--raio);
     background: var(--cor-amarelo);
     color: var(--cor-marca-escura);
     font-weight: bold;
 }
-
 .avatar-grande {
+    position: relative;
     width: 118px;
     height: 118px;
     border: 5px solid var(--cor-creme);
     font-size: 36px;
+    margin-top: -35px;
 }
-
 .avatar {
     width: 44px;
     height: 44px;
 }
-
+.info-perfil {
+    min-width: 0;
+    padding-top: 22px;
+    overflow-wrap: anywhere;
+}
 .etiqueta {
     margin: 0 0 8px;
 }
-
 h1 {
     margin: 0 0 8px;
-    font-size: 42px;
-    line-height: 1.05;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
 }
-
-.info-perfil p {
-    max-width: 620px;
+.usuario-perfil {
+    margin: 0;
+    color: var(--cor-verde-agua);
 }
-
+#bioPerfil {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+#botaoSair {
+    margin-top: 22px;
+}
 .metricas {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
     margin-top: 16px;
 }
-
-.metricas span {
+.metricas > span {
     padding: 9px 12px;
-    background: rgba(255, 249, 237, 0.14);
-    border: 1px solid rgba(255, 249, 237, 0.24);
+    background: rgba(255, 249, 237, .14);
+    border: 1px solid rgba(255, 249, 237, .24);
     border-radius: 6px;
 }
-
-.grade-perfil {
-    display: grid;
-    grid-template-columns: 290px 1fr;
-    gap: 22px;
+.controles-perfil, .favoritos-perfil, .publicacoes-perfil {
     margin-top: 22px;
 }
-
-.painel,
-.post {
+.painel {
     padding: 22px;
 }
-
-.painel h2,
-.post p {
-    margin-top: 0;
-}
-
 .painel h2 {
-    margin-top: 22px;
-    font-size: 18px;
-}
-
-.painel h2:first-of-type {
     margin-top: 0;
+    font-size: 22px;
 }
-
-.rotulo-arquivo {
-    margin-top: 10px;
+.campos-imagens {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
 }
-
 .mensagem {
     min-height: 20px;
-    margin: 8px 0 0;
+    margin: 8px 0;
     color: var(--cor-verde-escuro);
     font-weight: bold;
 }
-
+.mensagem:empty {
+    display: none;
+}
 .grade-favoritos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
+    gap: 16px;
 }
-
-.tag-favorito {
-    padding: 8px 12px;
+.card-favorito {
+    min-width: 0;
     border: 1px solid var(--cor-borda);
-    border-radius: 999px;
+    border-radius: var(--raio);
+    overflow: hidden;
+}
+.foto-favorito {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
     background: var(--cor-fundo);
-    color: var(--cor-texto);
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: normal;
-    min-height: 0;
-    box-shadow: none;
-    transition: 0.2s;
 }
-
-.tag-favorito:hover {
-    background: var(--cor-borda);
-    transform: none;
+.foto-favorito span {
+    padding: 12px;
+    text-align: center;
 }
-
-.tag-favorito.ativo {
-    background: var(--cor-amarelo);
-    border-color: var(--cor-amarelo);
-    color: #18332f;
-    font-weight: bold;
+.foto-favorito img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-
+.card-favorito h3 {
+    margin: 0;
+    padding: 12px;
+    font-size: 16px;
+    overflow-wrap: anywhere;
+}
+.grade-favoritos .estado-vazio {
+    grid-column: 1 / -1;
+}
+#explorarCatalogo {
+    margin: 18px 0 0;
+}
 .coluna-posts {
     display: grid;
     gap: 18px;
 }
-
 .topo-post {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 14px;
 }
-
 .topo-post span {
     display: block;
     color: #60706a;
     font-size: 14px;
 }
-
-.post img {
-    width: 100%;
-    max-height: 380px;
-    object-fit: cover;
-    border: 5px solid var(--cor-amarelo);
-    border-radius: 8px;
-}
-
 .acoes-post {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 14px;
 }
-
 @media (max-width: 760px) {
-    .capa-perfil,
-    .grade-perfil {
+    .identidade-perfil {
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 16px;
+        padding: 0 18px 22px;
+    }
+    #botaoSair {
+        grid-column: 1 / -1;
+        justify-self: start;
+        margin-top: 0;
+    }
+    .avatar-grande {
+        width: 84px;
+        height: 84px;
+        font-size: 28px;
+    }
+    .campos-imagens {
         grid-template-columns: 1fr;
     }
-
-    .capa-perfil {
-        align-items: start;
+}
+@media (max-width: 440px) {
+    .pagina-perfil {
+        padding: 20px 12px 32px;
     }
-
-    h1 {
-        font-size: 34px;
+    .identidade-perfil {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .info-perfil {
+        padding-top: 0;
+    }
+    .painel {
+        padding: 18px;
     }
 }

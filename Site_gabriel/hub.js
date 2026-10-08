@@ -26,9 +26,9 @@ if (fraseDoDia) {
 if (usuarioAtual) {
     document.getElementById("nomeHub").textContent = usuarioAtual.nome;
     document.getElementById("usuarioHub").textContent = `@${usuarioAtual.usuario}`;
-    document.getElementById("avatarHub").innerHTML = `<i class="fa-solid fa-fish" aria-hidden="true"></i>`;
+    renderizarAvatar(document.getElementById("avatarHub"), usuarioAtual);
     const acaoPerfil = document.getElementById("acaoPerfilHub");
-    acaoPerfil.href = "perfil.html";
+    acaoPerfil.href = `perfil.html?id=${encodeURIComponent(usuarioAtual.id)}`;
     acaoPerfil.querySelector("i").className = "fa-solid fa-address-card";
     acaoPerfil.querySelector("span").textContent = "Ver meu perfil";
 }
@@ -43,28 +43,25 @@ function renderizarFeed() {
     }
 
     posts.forEach((post) => {
-        const jaCurtiu = Boolean(usuarioAtual) && post.curtidas.includes(usuarioAtual.id);
+        const curtidas = Array.isArray(post.curtidas) ? post.curtidas : [];
+        const jaCurtiu = Boolean(usuarioAtual) && curtidas.includes(usuarioAtual.id);
 
         const artigo = document.createElement("article");
         artigo.className = "post";
         artigo.innerHTML = `
-            <div class="topo-post">
-                <div class="avatar"><i class="fa-solid fa-fish" aria-hidden="true"></i></div>
-                <div>
-                    <strong>${escaparHTML(post.autorNome)}</strong>
-                    <span>@${escaparHTML(post.autorUsuario)}</span>
-                </div>
-            </div>
             <p>${escaparHTML(post.texto)}</p>
-            ${post.imagemUrl ? `<div class="midia-post"><img src="${escaparHTML(post.imagemUrl)}" alt="Imagem publicada por @${escaparHTML(post.autorUsuario)}" loading="lazy" decoding="async"></div>` : ""}
             <div class="acoes-post">
-                <button type="button" class="botao-curtir" data-id="${post.id}" aria-pressed="${jaCurtiu}" aria-label="${jaCurtiu ? "Remover curtida" : "Curtir publicação"}" ${
+                <button type="button" class="botao-curtir" aria-pressed="${jaCurtiu}" aria-label="${jaCurtiu ? "Remover curtida" : "Curtir publicação"}" ${
             usuarioAtual ? "" : "disabled title='Crie um perfil para curtir'"
         }>
-                    <i class="${jaCurtiu ? "fa-solid" : "fa-regular"} fa-heart" aria-hidden="true"></i><span>${post.curtidas.length}</span>
+                    <i class="${jaCurtiu ? "fa-solid" : "fa-regular"} fa-heart" aria-hidden="true"></i><span>${curtidas.length}</span>
                 </button>
             </div>
         `;
+        artigo.prepend(criarCabecalhoPost(post));
+        const midia = criarMidiaPost(post);
+        if (midia) artigo.querySelector(".acoes-post").before(midia);
+        artigo.querySelector(".botao-curtir").dataset.id = post.id;
         listaFeed.appendChild(artigo);
     });
 

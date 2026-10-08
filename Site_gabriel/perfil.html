@@ -35,43 +35,53 @@
     </header>
 
     <main id="conteudo" tabindex="-1" class="pagina-perfil">
-        <section class="capa-perfil" id="capaPerfil">
-            <div class="avatar-grande" id="avatarPerfil"><i class="fa-solid fa-fish" aria-hidden="true"></i></div>
-            <div class="info-perfil">
-                <p class="etiqueta">perfil de usuario</p>
-                <h1 id="nomePerfil">Visitante do Aviario</h1>
-                <p id="bioPerfil">Apaixonado por passaros, cantos estranhos e fotos com muita aura.</p>
-                <div class="metricas">
-                    <span><strong id="contagemPosts">0</strong> posts</span>
+        <a class="voltar-feed" href="hub.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Voltar ao feed</a>
+        <p class="mensagem" id="mensagemPerfil" role="status" aria-live="polite">Carregando perfil...</p>
+        <a id="entrarPerfil" class="botao-link" href="login.html" hidden>Entrar na minha conta</a>
+        <div id="conteudoPerfil" aria-busy="true" hidden>
+            <section class="capa-perfil" id="capaPerfil" aria-labelledby="nomePerfil">
+                <div class="banner-perfil" id="bannerPerfil"></div>
+                <div class="identidade-perfil">
+                    <div class="avatar-grande" id="avatarPerfil"></div>
+                    <div class="info-perfil">
+                        <p class="etiqueta">Perfil no Aviário</p>
+                        <h1 id="nomePerfil"></h1>
+                        <p id="usuarioPerfil" class="usuario-perfil"></p>
+                        <p id="bioPerfil"></p>
+                        <div class="metricas">
+                            <span><strong id="contagemPosts">0</strong> <span id="rotuloPublicacoes">publicações</span></span>
+                            <span><strong id="contagemFavoritos">0</strong> <span id="rotuloFavoritos">pássaros favoritos</span></span>
+                        </div>
+                    </div>
+                    <button type="button" class="botao-link" id="botaoSair" hidden><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>Sair da conta</button>
                 </div>
-            </div>
-            <button type="button" class="botao-link" id="botaoSair"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>Sair da conta</button>
-        </section>
+            </section>
 
-        <section class="grade-perfil">
-            <aside class="painel">
-                <h2>Sobre</h2>
-                <p><strong>Usuario:</strong> <span id="usuarioPerfil">@visitante</span></p>
-
-                <h2>Imagens do perfil</h2>
-                <label class="rotulo-arquivo">
-                    <span><i class="fa-solid fa-camera" aria-hidden="true"></i>Foto de perfil</span>
-                    <input type="file" id="campoAvatar" accept="image/*" aria-describedby="mensagemImagens ajudaImagensPerfil">
-                </label>
-                <label class="rotulo-arquivo">
-                    <span><i class="fa-solid fa-panorama" aria-hidden="true"></i>Banner do perfil</span>
-                    <input type="file" id="campoBanner" accept="image/*" aria-describedby="mensagemImagens ajudaImagensPerfil">
-                </label>
+            <section class="painel controles-perfil" id="controlesPerfil" aria-labelledby="tituloImagens" hidden>
+                <h2 id="tituloImagens">Imagens do meu perfil</h2>
+                <div class="campos-imagens">
+                    <label class="rotulo-arquivo">
+                        <span><i class="fa-solid fa-camera" aria-hidden="true"></i>Foto de perfil</span>
+                        <input type="file" id="campoAvatar" accept="image/*" aria-describedby="mensagemImagens ajudaImagensPerfil" disabled>
+                    </label>
+                    <label class="rotulo-arquivo">
+                        <span><i class="fa-solid fa-panorama" aria-hidden="true"></i>Banner do perfil</span>
+                        <input type="file" id="campoBanner" accept="image/*" aria-describedby="mensagemImagens ajudaImagensPerfil" disabled>
+                    </label>
+                </div>
                 <p id="ajudaImagensPerfil">Escolha uma imagem de até 8 MB.</p>
                 <p class="mensagem" id="mensagemImagens"></p>
-
-                <h2>Passaros favoritos</h2>
-                <p class="mensagem" id="mensagemFavoritos"></p>
+            </section>
+            <section class="painel favoritos-perfil" aria-labelledby="tituloFavoritos">
+                <h2 id="tituloFavoritos">Pássaros favoritos</h2>
                 <div id="listaFavoritos" class="grade-favoritos"></div>
-            </aside>
-
-            <div class="coluna-posts" id="colunaPosts"></div>
-        </section>
+                <a id="explorarCatalogo" class="voltar-feed" href="catalogo.html" hidden>Explorar catálogo e escolher favoritos</a>
+            </section>
+            <section class="publicacoes-perfil" aria-labelledby="tituloPublicacoes">
+                <h2 id="tituloPublicacoes">Publicações</h2>
+                <div class="coluna-posts" id="colunaPosts"></div>
+            </section>
+        </div>
     </main>
 
     <div class="cursor" aria-hidden="true">
